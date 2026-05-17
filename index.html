@@ -5,375 +5,82 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Marketing Planner Dashboard</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background-color: #f9fafb;
-            color: #1f2937;
-            line-height: 1.6;
-        }
-        
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-            padding: 25px;
-            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
-            border-radius: 12px;
-            color: white;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-        }
-        
-        .header h1 {
-            font-size: 28px;
-            margin-bottom: 5px;
-        }
-        
-        .header p {
-            font-size: 14px;
-            opacity: 0.9;
-        }
-        
-        .header-controls {
-            display: flex;
-            gap: 10px;
-        }
-        
-        .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-        
-        .btn-primary {
-            background-color: white;
-            color: #2563eb;
-        }
-        
-        .btn-primary:hover {
-            background-color: #f3f4f6;
-        }
-        
-        .btn-success {
-            background-color: #10b981;
-            color: white;
-        }
-        
-        .btn-success:hover {
-            background-color: #059669;
-        }
-        
-        .btn-danger {
-            background-color: #ef4444;
-            color: white;
-            padding: 6px 12px;
-            font-size: 12px;
-        }
-        
-        .summary-section {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-bottom: 30px;
-        }
-        
-        .summary-card {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            border-left: 4px solid #2563eb;
-        }
-        
-        .summary-card h3 {
-            font-size: 13px;
-            color: #6b7280;
-            margin-bottom: 10px;
-            font-weight: 600;
-        }
-        
-        .summary-value {
-            font-size: 24px;
-            font-weight: 700;
-            color: #1f2937;
-        }
-        
-        .controls {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 30px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            align-items: center;
-        }
-        
-        .sheet-selector {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .sheet-selector label {
-            font-weight: 600;
-            font-size: 13px;
-        }
-        
-        .sheet-selector select,
-        input[type="text"],
-        select {
-            padding: 10px 12px;
-            border: 1px solid #e5e7eb;
-            border-radius: 6px;
-            font-size: 14px;
-            font-family: inherit;
-        }
-        
-        .sheet-selector select:focus,
-        input[type="text"]:focus,
-        select:focus {
-            outline: none;
-            border-color: #2563eb;
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-        }
-        
-        .search-box {
-            flex: 1;
-            min-width: 200px;
-        }
-        
-        .table-responsive {
-            background: white;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            margin-bottom: 30px;
-        }
-        
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        
-        thead {
-            background-color: #f3f4f6;
-            border-bottom: 2px solid #e5e7eb;
-        }
-        
-        th {
-            padding: 12px;
-            text-align: left;
-            font-size: 12px;
-            font-weight: 700;
-            color: #1f2937;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        
-        td {
-            padding: 12px;
-            border-bottom: 1px solid #e5e7eb;
-        }
-        
-        tbody tr:hover {
-            background-color: #f9fafb;
-        }
-        
-        .campaign-name {
-            cursor: pointer;
-            color: #2563eb;
-            font-weight: 600;
-        }
-        
-        .campaign-name:hover {
-            text-decoration: underline;
-        }
-        
-        .campaign-value {
-            color: #10b981;
-            font-weight: 600;
-        }
-        
-        .actions {
-            display: flex;
-            gap: 8px;
-        }
-        
-        .loading {
-            text-align: center;
-            padding: 40px;
-            color: #6b7280;
-        }
-        
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            justify-content: center;
-            align-items: center;
-        }
-        
-        .modal.active {
-            display: flex;
-        }
-        
-        .modal-content {
-            background-color: white;
-            padding: 30px;
-            border-radius: 12px;
-            width: 90%;
-            max-width: 600px;
-            max-height: 90vh;
-            overflow-y: auto;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-        }
-        
-        .close {
-            color: #6b7280;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        
-        .close:hover {
-            color: #1f2937;
-        }
-        
-        .modal h2 {
-            margin-bottom: 20px;
-            color: #1f2937;
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            font-size: 14px;
-        }
-        
-        .form-group input,
-        .form-group select {
-            width: 100%;
-            padding: 10px 12px;
-            border: 1px solid #e5e7eb;
-            border-radius: 6px;
-            font-size: 14px;
-            font-family: inherit;
-        }
-        
-        .monthly-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-        
-        .month-item {
-            background: #f3f4f6;
-            padding: 12px;
-            border-radius: 6px;
-        }
-        
-        .month-item label {
-            display: block;
-            margin-bottom: 6px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-        
-        .month-item input {
-            width: 100%;
-        }
-        
-        .modal-buttons {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-        }
-        
-        .modal-buttons button {
-            flex: 1;
-        }
-        
-        .success-message,
-        .error-message {
-            padding: 12px;
-            border-radius: 6px;
-            margin-bottom: 15px;
-            border-left: 4px solid #10b981;
-        }
-        
-        .error-message {
-            background-color: #fee2e2;
-            color: #7f1d1d;
-            border-left-color: #ef4444;
-        }
-        
-        .success-message {
-            background-color: #d1fae5;
-            color: #065f46;
-        }
-        
-        @media (max-width: 768px) {
-            .header {
-                flex-direction: column;
-                text-align: center;
-            }
-            
-            .controls {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            
-            .sheet-selector {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            
-            .search-box {
-                width: 100%;
-            }
-            
-            table {
-                font-size: 12px;
-            }
-            
-            th, td {
-                padding: 8px;
-            }
-            
-            .actions button {
-                font-size: 11px;
-                padding: 5px 10px;
-            }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto; background-color: #f9fafb; color: #1f2937; }
+        .container { max-width: 1600px; margin: 0 auto; padding: 20px; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; padding: 25px; background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%); border-radius: 12px; color: white; gap: 20px; flex-wrap: wrap; }
+        .header h1 { font-size: 28px; }
+        .header-controls { display: flex; gap: 10px; flex-wrap: wrap; }
+        .tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #e5e7eb; }
+        .tab { padding: 12px 20px; background: none; border: none; cursor: pointer; font-size: 14px; font-weight: 600; color: #6b7280; border-bottom: 3px solid transparent; transition: all 0.3s; }
+        .tab.active { color: #2563eb; border-bottom-color: #2563eb; }
+        .tab:hover { color: #1f2937; }
+        .btn { padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 600; transition: all 0.3s; }
+        .btn-primary { background: white; color: #2563eb; }
+        .btn-primary:hover { background: #f3f4f6; }
+        .btn-success { background: #10b981; color: white; }
+        .btn-success:hover { background: #059669; }
+        .btn-danger { background: #ef4444; color: white; padding: 6px 12px; font-size: 12px; }
+        .summary-section { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 30px; }
+        .summary-card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border-left: 4px solid #2563eb; }
+        .summary-card h3 { font-size: 13px; color: #6b7280; margin-bottom: 10px; font-weight: 600; }
+        .summary-value { font-size: 24px; font-weight: 700; }
+        .controls { background: white; padding: 20px; border-radius: 8px; margin-bottom: 30px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); display: flex; flex-wrap: wrap; gap: 15px; align-items: center; }
+        .sheet-selector, .view-selector { display: flex; align-items: center; gap: 10px; }
+        select, input { padding: 10px 12px; border: 1px solid #e5e7eb; border-radius: 6px; font-size: 14px; }
+        select:focus, input:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
+        .search-box { flex: 1; min-width: 200px; }
+        .campaign-group { background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .group-header { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; padding: 15px 20px; font-weight: 700; font-size: 16px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+        .group-header:hover { background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%); }
+        table { width: 100%; border-collapse: collapse; }
+        thead { background: #f3f4f6; border-bottom: 2px solid #e5e7eb; }
+        th { padding: 12px; text-align: left; font-size: 12px; font-weight: 700; text-transform: uppercase; }
+        td { padding: 12px; border-bottom: 1px solid #e5e7eb; }
+        tbody tr:hover { background: #f9fafb; }
+        .campaign-name { cursor: pointer; color: #2563eb; font-weight: 600; }
+        .campaign-name:hover { text-decoration: underline; }
+        .campaign-value { color: #10b981; font-weight: 600; text-align: right; }
+        .campaign-summary { background: white; border-radius: 8px; padding: 20px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .campaign-summary h3 { margin-bottom: 15px; font-size: 16px; }
+        .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; }
+        .summary-item { background: #f3f4f6; padding: 15px; border-radius: 6px; border-left: 4px solid #2563eb; }
+        .summary-item-label { font-size: 12px; color: #6b7280; font-weight: 600; margin-bottom: 5px; }
+        .summary-item-value { font-size: 20px; font-weight: 700; }
+        .report-section { background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .report-section h3 { font-size: 18px; margin-bottom: 20px; color: #1f2937; border-bottom: 2px solid #e5e7eb; padding-bottom: 10px; }
+        .report-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-bottom: 20px; }
+        .report-card { background: #f9fafb; padding: 20px; border-radius: 8px; border: 2px solid #e5e7eb; }
+        .report-card h4 { font-size: 14px; color: #1f2937; margin-bottom: 15px; font-weight: 700; }
+        .report-metric { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #e5e7eb; }
+        .report-metric:last-child { border-bottom: none; }
+        .report-metric-label { color: #6b7280; font-size: 13px; }
+        .report-metric-value { font-size: 18px; font-weight: 700; color: #2563eb; }
+        .efficiency { background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); padding: 15px; border-radius: 6px; margin-top: 10px; }
+        .efficiency-label { font-size: 12px; color: #0c4a6e; margin-bottom: 5px; }
+        .efficiency-value { font-size: 16px; font-weight: 700; color: #0369a1; }
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; }
+        .modal.active { display: flex; }
+        .modal-content { background: white; padding: 30px; border-radius: 12px; width: 90%; max-width: 700px; max-height: 90vh; overflow-y: auto; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); }
+        .close { color: #6b7280; float: right; font-size: 28px; cursor: pointer; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; }
+        .form-group input, .form-group select { width: 100%; padding: 10px 12px; border: 1px solid #e5e7eb; border-radius: 6px; font-size: 14px; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .weekly-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 12px; margin-bottom: 20px; }
+        .week-item { background: #f3f4f6; padding: 10px; border-radius: 6px; }
+        .week-item label { display: block; margin-bottom: 4px; font-size: 11px; font-weight: 600; }
+        .week-item input { width: 100%; font-size: 12px; padding: 6px; }
+        .modal-buttons { display: flex; gap: 10px; margin-top: 20px; }
+        .modal-buttons button { flex: 1; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        @media (max-width: 768px) { 
+            .header { flex-direction: column; text-align: center; } 
+            .controls { flex-direction: column; align-items: stretch; } 
+            select, input { width: 100%; }
+            .form-row { grid-template-columns: 1fr; }
+            .report-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -382,7 +89,7 @@
         <header class="header">
             <div>
                 <h1>📊 Marketing Planner 2026</h1>
-                <p>Multi-Location Budget Manager</p>
+                <p>Advanced Multi-Location Budget Manager</p>
             </div>
             <div class="header-controls">
                 <button class="btn btn-primary" onclick="syncData()">🔄 Sync</button>
@@ -391,61 +98,49 @@
         </header>
         
         <section class="summary-section">
-            <div class="summary-card">
-                <h3>Total Annual Spend</h3>
-                <p class="summary-value" id="totalSpend">£0.00</p>
-            </div>
-            <div class="summary-card">
-                <h3>Active Campaigns</h3>
-                <p class="summary-value" id="campaignCount">0</p>
-            </div>
-            <div class="summary-card">
-                <h3>Avg per Campaign</h3>
-                <p class="summary-value" id="avgSpend">£0.00</p>
-            </div>
-            <div class="summary-card">
-                <h3>Last Updated</h3>
-                <p class="summary-value" id="lastUpdate">--:--</p>
-            </div>
+            <div class="summary-card"><h3>Total Annual Spend</h3><p class="summary-value" id="totalSpend">£0.00</p></div>
+            <div class="summary-card"><h3>Target Units</h3><p class="summary-value" id="targetUnits">0</p></div>
+            <div class="summary-card"><h3>Cost Per Unit</h3><p class="summary-value" id="costPerUnit">£0.00</p></div>
+            <div class="summary-card"><h3>Last Updated</h3><p class="summary-value" id="lastUpdate">--:--</p></div>
         </section>
         
-        <section class="controls">
-            <div class="sheet-selector">
-                <label>📍 Location:</label>
-                <select id="sheetSelect" onchange="changeSheet(this.value)">
-                    <option value="">Loading...</option>
-                </select>
-            </div>
-            <input type="text" id="searchInput" class="search-box" placeholder="🔍 Search campaigns..." onkeyup="filterCampaigns()">
-            <select id="categoryFilter" onchange="filterCampaigns()">
-                <option value="">📁 All Categories</option>
-                <option value="All">All</option>
-                <option value="New">New</option>
-                <option value="Used">Used</option>
-                <option value="Aftersales">Aftersales</option>
-                <option value="New & Used">New & Used</option>
-            </select>
-            <button class="btn btn-success" onclick="showAddModal()">+ Add Campaign</button>
-        </section>
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('campaigns')">📋 Campaigns</button>
+            <button class="tab" onclick="switchTab('reports')">📊 Reports</button>
+        </div>
         
-        <div class="table-responsive">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Campaign</th>
-                        <th>Category</th>
-                        <th>Q1</th>
-                        <th>Q2</th>
-                        <th>Q3</th>
-                        <th>Q4</th>
-                        <th>Annual</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="campaignsTableBody">
-                    <tr><td colspan="8" class="loading">⏳ Loading...</td></tr>
-                </tbody>
-            </table>
+        <!-- Campaigns Tab -->
+        <div id="campaigns" class="tab-content active">
+            <section class="controls">
+                <div class="sheet-selector">
+                    <label>📍 Location:</label>
+                    <select id="sheetSelect" onchange="changeSheet(this.value)"><option value="">Loading...</option></select>
+                </div>
+                <div class="view-selector">
+                    <label>📈 View:</label>
+                    <select id="viewSelect" onchange="changeView(this.value)">
+                        <option value="grouped">By Group</option>
+                        <option value="summary">Campaign Summary</option>
+                        <option value="all">All Campaigns</option>
+                    </select>
+                </div>
+                <input type="text" id="searchInput" class="search-box" placeholder="🔍 Search campaigns..." onkeyup="filterCampaigns()">
+                <button class="btn btn-success" onclick="showAddModal()">+ Add Campaign</button>
+            </section>
+            
+            <div id="viewContainer"></div>
+        </div>
+        
+        <!-- Reports Tab -->
+        <div id="reports" class="tab-content">
+            <section class="controls">
+                <div class="sheet-selector">
+                    <label>📍 Location:</label>
+                    <select id="reportSheetSelect" onchange="updateReports(this.value)"><option value="">Loading...</option></select>
+                </div>
+            </section>
+            
+            <div id="reportsContainer"></div>
         </div>
     </div>
     
@@ -453,8 +148,22 @@
     <div id="editModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal()">&times;</span>
-            <h2 id="modalTitle">Monthly Breakdown</h2>
-            <div id="monthlyBreakdown" class="monthly-grid"></div>
+            <h2 id="modalTitle">Campaign Details</h2>
+            <div class="form-group">
+                <label>Campaign Name</label>
+                <input type="text" id="editCampaignName" disabled>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Target Units (Annual) *</label>
+                    <input type="number" id="editTargetUnits" step="1" min="0">
+                </div>
+                <div class="form-group">
+                    <label>Monthly Budget (£) *</label>
+                    <input type="number" id="editMonthlyBudget" step="0.01" min="0">
+                </div>
+            </div>
+            <div id="monthlyBreakdown" class="weekly-grid"></div>
             <div class="modal-buttons">
                 <button class="btn btn-primary" onclick="saveChanges()">Save</button>
                 <button class="btn btn-primary" onclick="closeModal()">Cancel</button>
@@ -484,8 +193,18 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>Monthly Budget (£) *</label>
-                    <input type="number" id="monthlyBudget" step="0.01" min="0" required>
+                    <label>Campaign Type (for grouping)</label>
+                    <input type="text" id="campaignType" placeholder="e.g., Social Media, Digital, Events">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Target Units (Annual) *</label>
+                        <input type="number" id="targetUnits" step="1" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Monthly Budget (£) *</label>
+                        <input type="number" id="monthlyBudget" step="0.01" min="0" required>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label>Start Month *</label>
@@ -517,160 +236,373 @@
     </div>
     
     <script>
-        // CONFIGURATION - YOUR DEPLOYMENT URL
         const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyyR4xzUcmFdwR0MMV6Pe6z5wHQzvq-YFR8H1sKw4l0_WB4Lf7WSnmlTOz4w56_vyE3/exec';
+        let allSheets = [], campaigns = {}, filteredCampaigns = [], summary = {}, currentSheet = null, currentCampaignIndex = null, currentView = 'grouped';
         
-        // Global variables
-        let allSheets = [];
-        let campaigns = {};
-        let filteredCampaigns = [];
-        let summary = {};
-        let currentSheet = null;
-        let currentCampaignIndex = null;
+        document.addEventListener('DOMContentLoaded', () => { loadSheets(); setInterval(syncData, 300000); });
         
-        // Initialize on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            loadSheets();
-            setInterval(syncData, 300000); // Auto-sync every 5 minutes
-        });
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+            
+            if (tabName === 'reports') {
+                const reportSelect = document.getElementById('reportSheetSelect');
+                if (reportSelect.innerHTML === '') {
+                    reportSelect.innerHTML = document.getElementById('sheetSelect').innerHTML;
+                    reportSelect.value = currentSheet;
+                }
+                updateReports(currentSheet);
+            }
+        }
         
-        // Load all available sheets
         async function loadSheets() {
             try {
                 const response = await fetch(`${APPS_SCRIPT_URL}?action=getSheets`);
                 allSheets = await response.json();
-                
                 const select = document.getElementById('sheetSelect');
-                select.innerHTML = '';
-                allSheets.forEach(sheet => {
-                    const option = document.createElement('option');
-                    option.value = sheet.name;
-                    option.textContent = sheet.name;
-                    select.appendChild(option);
+                const reportSelect = document.getElementById('reportSheetSelect');
+                [select, reportSelect].forEach(el => {
+                    el.innerHTML = '';
+                    allSheets.forEach(sheet => {
+                        const option = document.createElement('option');
+                        option.value = sheet.name;
+                        option.textContent = sheet.name;
+                        el.appendChild(option);
+                    });
                 });
-                
                 if (allSheets.length > 0) {
                     currentSheet = allSheets[0].name;
                     select.value = currentSheet;
+                    reportSelect.value = currentSheet;
                     syncData();
                 }
             } catch(error) {
-                showError('Failed to load sheets. Check your deployment URL in the code.');
+                alert('Failed to load sheets.');
             }
         }
         
-        // Change sheet
-        function changeSheet(sheetName) {
-            currentSheet = sheetName;
-            syncData();
-        }
+        function changeSheet(sheetName) { currentSheet = sheetName; syncData(); }
+        function changeView(viewName) { currentView = viewName; renderView(); }
         
-        // Sync data from Google Sheets
         async function syncData() {
             if (!currentSheet) return;
-            
             try {
-                document.getElementById('campaignsTableBody').innerHTML = '<tr><td colspan="8" class="loading">⏳ Syncing...</td></tr>';
-                
                 const [campaignsRes, summaryRes] = await Promise.all([
                     fetch(`${APPS_SCRIPT_URL}?action=getCampaigns&sheet=${encodeURIComponent(currentSheet)}`),
                     fetch(`${APPS_SCRIPT_URL}?action=getSummary&sheet=${encodeURIComponent(currentSheet)}`)
                 ]);
-                
                 campaigns[currentSheet] = await campaignsRes.json();
                 summary = await summaryRes.json();
                 filteredCampaigns = [...campaigns[currentSheet]];
-                
                 updateUI();
                 updateTime();
             } catch(error) {
-                showError('Failed to sync. Check your deployment URL.');
+                alert('Failed to sync data');
             }
         }
         
-        // Update UI with data
         function updateUI() {
             const formatter = new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' });
+            const totalSpend = summary.totalSpend || 0;
+            const totalUnits = (campaigns[currentSheet] || []).reduce((sum, c) => sum + (c.targetUnits || 0), 0);
+            const costPerUnit = totalUnits > 0 ? totalSpend / totalUnits : 0;
             
-            document.getElementById('totalSpend').textContent = formatter.format(summary.totalSpend || 0);
-            document.getElementById('campaignCount').textContent = summary.campaignCount || 0;
-            document.getElementById('avgSpend').textContent = formatter.format(summary.averageSpendPerCampaign || 0);
+            document.getElementById('totalSpend').textContent = formatter.format(totalSpend);
+            document.getElementById('targetUnits').textContent = totalUnits.toLocaleString();
+            document.getElementById('costPerUnit').textContent = formatter.format(costPerUnit);
             
-            displayCampaigns(filteredCampaigns);
+            renderView();
         }
         
-        // Display campaigns in table
-        function displayCampaigns(list) {
-            const tbody = document.getElementById('campaignsTableBody');
-            if (list.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="8" class="loading">No campaigns</td></tr>';
-                return;
-            }
-            
-            const formatter = new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' });
-            
-            tbody.innerHTML = list.map((c, i) => `
-                <tr>
-                    <td><span class="campaign-name" onclick="showEditModal(${i})">${c.name}</span></td>
-                    <td>${c.category || '-'}</td>
-                    <td class="campaign-value">${formatter.format(c.quarterlyBreakdown?.q1 || 0)}</td>
-                    <td class="campaign-value">${formatter.format(c.quarterlyBreakdown?.q2 || 0)}</td>
-                    <td class="campaign-value">${formatter.format(c.quarterlyBreakdown?.q3 || 0)}</td>
-                    <td class="campaign-value">${formatter.format(c.quarterlyBreakdown?.q4 || 0)}</td>
-                    <td class="campaign-value"><strong>${formatter.format(c.totalSpend || 0)}</strong></td>
-                    <td class="actions">
-                        <button class="btn" onclick="showEditModal(${i})">Edit</button>
-                        <button class="btn btn-danger" onclick="deleteCampaign(${i})">Delete</button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-        
-        // Filter campaigns
         function filterCampaigns() {
             const search = document.getElementById('searchInput').value.toLowerCase();
-            const category = document.getElementById('categoryFilter').value;
-            
-            filteredCampaigns = (campaigns[currentSheet] || []).filter(c => 
-                (!search || c.name.toLowerCase().includes(search)) &&
-                (!category || c.category === category)
-            );
-            
-            displayCampaigns(filteredCampaigns);
+            const allCampaigns = campaigns[currentSheet] || [];
+            filteredCampaigns = allCampaigns.filter(c => !search || c.name.toLowerCase().includes(search));
+            renderView();
         }
         
-        // Show edit modal
+        function renderView() {
+            if (currentView === 'grouped') renderGroupedView();
+            else if (currentView === 'summary') renderSummaryView();
+            else renderAllView();
+        }
+        
+        function renderGroupedView() {
+            const grouped = {};
+            filteredCampaigns.forEach(c => {
+                const groupName = c.type || 'Other';
+                if (!grouped[groupName]) grouped[groupName] = [];
+                grouped[groupName].push(c);
+            });
+            
+            const formatter = new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' });
+            let html = '';
+            
+            Object.entries(grouped).forEach(([groupName, groupCampaigns]) => {
+                const groupTotal = groupCampaigns.reduce((sum, c) => sum + (c.totalSpend || 0), 0);
+                const groupUnits = groupCampaigns.reduce((sum, c) => sum + (c.targetUnits || 0), 0);
+                const groupCostPerUnit = groupUnits > 0 ? groupTotal / groupUnits : 0;
+                
+                html += `<div class="campaign-group">
+                    <div class="group-header" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'none' ? '' : 'none'">
+                        <span>📁 ${groupName} (${groupUnits} units)</span><span>${formatter.format(groupTotal)} | £${groupCostPerUnit.toFixed(2)}/unit</span>
+                    </div>
+                    <div class="table-responsive" style="padding: 0;">
+                        <table>
+                            <thead><tr><th>Campaign</th><th>Units</th><th>Q1</th><th>Q2</th><th>Q3</th><th>Q4</th><th>Annual</th><th>Cost/Unit</th><th>Actions</th></tr></thead>
+                            <tbody>${groupCampaigns.map((c, i) => {
+                                const globalIndex = campaigns[currentSheet].indexOf(c);
+                                const costPerUnit = (c.targetUnits || 0) > 0 ? (c.totalSpend || 0) / c.targetUnits : 0;
+                                return `<tr><td><span class="campaign-name" onclick="showEditModal(${globalIndex})">${c.name}</span></td>
+                                    <td><strong>${(c.targetUnits || 0).toLocaleString()}</strong></td>
+                                    <td class="campaign-value">${formatter.format(c.quarterlyBreakdown?.q1 || 0)}</td>
+                                    <td class="campaign-value">${formatter.format(c.quarterlyBreakdown?.q2 || 0)}</td>
+                                    <td class="campaign-value">${formatter.format(c.quarterlyBreakdown?.q3 || 0)}</td>
+                                    <td class="campaign-value">${formatter.format(c.quarterlyBreakdown?.q4 || 0)}</td>
+                                    <td class="campaign-value"><strong>${formatter.format(c.totalSpend || 0)}</strong></td>
+                                    <td><strong>£${costPerUnit.toFixed(2)}</strong></td>
+                                    <td><button class="btn" onclick="showEditModal(${globalIndex})">Edit</button><button class="btn btn-danger" onclick="deleteCampaign(${globalIndex})">Delete</button></td>
+                                </tr>`;
+                            }).join('')}</tbody>
+                        </table>
+                    </div>
+                </div>`;
+            });
+            
+            document.getElementById('viewContainer').innerHTML = html;
+        }
+        
+        function renderSummaryView() {
+            const campaignTotals = {};
+            const formatter = new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' });
+            
+            filteredCampaigns.forEach(c => {
+                if (!campaignTotals[c.name]) {
+                    campaignTotals[c.name] = {
+                        total: 0,
+                        units: 0,
+                        quarterly: { q1: 0, q2: 0, q3: 0, q4: 0 }
+                    };
+                }
+                campaignTotals[c.name].total += c.totalSpend || 0;
+                campaignTotals[c.name].units += c.targetUnits || 0;
+                campaignTotals[c.name].quarterly.q1 += c.quarterlyBreakdown?.q1 || 0;
+                campaignTotals[c.name].quarterly.q2 += c.quarterlyBreakdown?.q2 || 0;
+                campaignTotals[c.name].quarterly.q3 += c.quarterlyBreakdown?.q3 || 0;
+                campaignTotals[c.name].quarterly.q4 += c.quarterlyBreakdown?.q4 || 0;
+            });
+            
+            let html = '';
+            Object.entries(campaignTotals).forEach(([campaignName, data]) => {
+                const costPerUnit = data.units > 0 ? data.total / data.units : 0;
+                html += `<div class="campaign-summary">
+                    <h3>💰 ${campaignName}</h3>
+                    <div class="summary-grid">
+                        <div class="summary-item"><div class="summary-item-label">Annual Total</div><div class="summary-item-value">${formatter.format(data.total)}</div></div>
+                        <div class="summary-item"><div class="summary-item-label">Target Units</div><div class="summary-item-value">${data.units.toLocaleString()}</div></div>
+                        <div class="summary-item"><div class="summary-item-label">Cost/Unit</div><div class="summary-item-value">£${costPerUnit.toFixed(2)}</div></div>
+                        <div class="summary-item"><div class="summary-item-label">Q1</div><div class="summary-item-value">${formatter.format(data.quarterly.q1)}</div></div>
+                        <div class="summary-item"><div class="summary-item-label">Q2</div><div class="summary-item-value">${formatter.format(data.quarterly.q2)}</div></div>
+                        <div class="summary-item"><div class="summary-item-label">Q3</div><div class="summary-item-value">${formatter.format(data.quarterly.q3)}</div></div>
+                        <div class="summary-item"><div class="summary-item-label">Q4</div><div class="summary-item-value">${formatter.format(data.quarterly.q4)}</div></div>
+                    </div>
+                </div>`;
+            });
+            
+            document.getElementById('viewContainer').innerHTML = html;
+        }
+        
+        function renderAllView() {
+            const formatter = new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' });
+            let html = `<div class="campaign-group"><div class="group-header">📊 All Campaigns</div>
+                <div class="table-responsive" style="padding: 0;"><table>
+                    <thead><tr><th>Campaign</th><th>Category</th><th>Type</th><th>Units</th><th>Q1</th><th>Q2</th><th>Q3</th><th>Q4</th><th>Annual</th><th>Cost/Unit</th><th>Actions</th></tr></thead>
+                    <tbody>${filteredCampaigns.map((c, i) => {
+                        const globalIndex = campaigns[currentSheet].indexOf(c);
+                        const costPerUnit = (c.targetUnits || 0) > 0 ? (c.totalSpend || 0) / c.targetUnits : 0;
+                        return `<tr><td><span class="campaign-name" onclick="showEditModal(${globalIndex})">${c.name}</span></td>
+                            <td>${c.category || '-'}</td><td>${c.type || '-'}</td>
+                            <td><strong>${(c.targetUnits || 0).toLocaleString()}</strong></td>
+                            <td class="campaign-value">${formatter.format(c.quarterlyBreakdown?.q1 || 0)}</td>
+                            <td class="campaign-value">${formatter.format(c.quarterlyBreakdown?.q2 || 0)}</td>
+                            <td class="campaign-value">${formatter.format(c.quarterlyBreakdown?.q3 || 0)}</td>
+                            <td class="campaign-value">${formatter.format(c.quarterlyBreakdown?.q4 || 0)}</td>
+                            <td class="campaign-value"><strong>${formatter.format(c.totalSpend || 0)}</strong></td>
+                            <td><strong>£${costPerUnit.toFixed(2)}</strong></td>
+                            <td><button class="btn" onclick="showEditModal(${globalIndex})">Edit</button><button class="btn btn-danger" onclick="deleteCampaign(${globalIndex})">Delete</button></td>
+                        </tr>`;
+                    }).join('')}</tbody>
+                </table></div></div>`;
+            
+            document.getElementById('viewContainer').innerHTML = html;
+        }
+        
+        function updateReports(sheetName) {
+            if (!sheetName) return;
+            const formatter = new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' });
+            const allCampaigns = campaigns[sheetName] || [];
+            
+            let html = `
+                <div class="report-section">
+                    <h3>📈 Budget & Efficiency Analysis</h3>
+                    <div class="report-grid">
+            `;
+            
+            // Budget by category
+            const categorySpend = {};
+            const categoryUnits = {};
+            allCampaigns.forEach(c => {
+                const cat = c.category || 'Uncategorized';
+                categorySpend[cat] = (categorySpend[cat] || 0) + (c.totalSpend || 0);
+                categoryUnits[cat] = (categoryUnits[cat] || 0) + (c.targetUnits || 0);
+            });
+            
+            Object.entries(categorySpend).forEach(([cat, spend]) => {
+                const units = categoryUnits[cat] || 0;
+                const costPerUnit = units > 0 ? spend / units : 0;
+                html += `
+                    <div class="report-card">
+                        <h4>${cat}</h4>
+                        <div class="report-metric">
+                            <span class="report-metric-label">Total Spend</span>
+                            <span class="report-metric-value">${formatter.format(spend)}</span>
+                        </div>
+                        <div class="report-metric">
+                            <span class="report-metric-label">Target Units</span>
+                            <span class="report-metric-value">${units.toLocaleString()}</span>
+                        </div>
+                        <div class="efficiency">
+                            <div class="efficiency-label">Cost Per Unit</div>
+                            <div class="efficiency-value">£${costPerUnit.toFixed(2)}</div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += `</div></div>`;
+            
+            // Top campaigns by spend
+            html += `<div class="report-section"><h3>🏆 Top Campaigns by Spend</h3><div class="report-grid">`;
+            const sortedBySpend = [...allCampaigns].sort((a, b) => (b.totalSpend || 0) - (a.totalSpend || 0)).slice(0, 5);
+            sortedBySpend.forEach(c => {
+                const costPerUnit = (c.targetUnits || 0) > 0 ? (c.totalSpend || 0) / c.targetUnits : 0;
+                html += `
+                    <div class="report-card">
+                        <h4>${c.name}</h4>
+                        <div class="report-metric">
+                            <span class="report-metric-label">Total Spend</span>
+                            <span class="report-metric-value">${formatter.format(c.totalSpend || 0)}</span>
+                        </div>
+                        <div class="report-metric">
+                            <span class="report-metric-label">Target Units</span>
+                            <span class="report-metric-value">${(c.targetUnits || 0).toLocaleString()}</span>
+                        </div>
+                        <div class="efficiency">
+                            <div class="efficiency-label">Cost Per Unit</div>
+                            <div class="efficiency-value">£${costPerUnit.toFixed(2)}</div>
+                        </div>
+                    </div>
+                `;
+            });
+            html += `</div></div>`;
+            
+            // Top campaigns by cost efficiency
+            html += `<div class="report-section"><h3>⚡ Most Cost-Efficient Campaigns</h3><div class="report-grid">`;
+            const sortedByEfficiency = [...allCampaigns].filter(c => (c.targetUnits || 0) > 0).sort((a, b) => {
+                const costA = (a.totalSpend || 0) / (a.targetUnits || 1);
+                const costB = (b.totalSpend || 0) / (b.targetUnits || 1);
+                return costA - costB;
+            }).slice(0, 5);
+            sortedByEfficiency.forEach(c => {
+                const costPerUnit = (c.targetUnits || 0) > 0 ? (c.totalSpend || 0) / c.targetUnits : 0;
+                html += `
+                    <div class="report-card">
+                        <h4>${c.name}</h4>
+                        <div class="report-metric">
+                            <span class="report-metric-label">Cost Per Unit</span>
+                            <span class="report-metric-value">£${costPerUnit.toFixed(2)}</span>
+                        </div>
+                        <div class="report-metric">
+                            <span class="report-metric-label">Total Spend</span>
+                            <span class="report-metric-value">${formatter.format(c.totalSpend || 0)}</span>
+                        </div>
+                        <div class="report-metric">
+                            <span class="report-metric-label">Target Units</span>
+                            <span class="report-metric-value">${(c.targetUnits || 0).toLocaleString()}</span>
+                        </div>
+                    </div>
+                `;
+            });
+            html += `</div></div>`;
+            
+            // Quarterly analysis
+            html += `<div class="report-section"><h3>📅 Quarterly Analysis</h3><div class="report-grid">`;
+            const quarters = [
+                { name: 'Q1', q: 'q1' },
+                { name: 'Q2', q: 'q2' },
+                { name: 'Q3', q: 'q3' },
+                { name: 'Q4', q: 'q4' }
+            ];
+            quarters.forEach(q => {
+                const qSpend = allCampaigns.reduce((sum, c) => sum + (c.quarterlyBreakdown?.[q.q] || 0), 0);
+                const qUnits = allCampaigns.reduce((sum, c) => sum + (c.targetUnits ? c.targetUnits / 4 : 0), 0);
+                const costPerUnit = qUnits > 0 ? qSpend / qUnits : 0;
+                html += `
+                    <div class="report-card">
+                        <h4>${q.name}</h4>
+                        <div class="report-metric">
+                            <span class="report-metric-label">Spend</span>
+                            <span class="report-metric-value">${formatter.format(qSpend)}</span>
+                        </div>
+                        <div class="report-metric">
+                            <span class="report-metric-label">Quarterly Units</span>
+                            <span class="report-metric-value">${Math.round(qUnits).toLocaleString()}</span>
+                        </div>
+                        <div class="efficiency">
+                            <div class="efficiency-label">Cost Per Unit</div>
+                            <div class="efficiency-value">£${costPerUnit.toFixed(2)}</div>
+                        </div>
+                    </div>
+                `;
+            });
+            html += `</div></div>`;
+            
+            document.getElementById('reportsContainer').innerHTML = html;
+        }
+        
         function showEditModal(index) {
             currentCampaignIndex = index;
             const campaign = campaigns[currentSheet][index];
-            document.getElementById('modalTitle').textContent = campaign.name + ' - Monthly Breakdown';
+            document.getElementById('modalTitle').textContent = campaign.name + ' - Campaign Details';
+            document.getElementById('editCampaignName').value = campaign.name;
+            document.getElementById('editTargetUnits').value = campaign.targetUnits || 0;
+            document.getElementById('editMonthlyBudget').value = (campaign.monthlySpend['Jan'] || 0);
             
             const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
             let html = '';
             
             months.forEach(month => {
-                const amount = campaign.monthlySpend[month] || 0;
-                html += `
-                    <div class="month-item">
-                        <label>${month}</label>
-                        <input type="number" step="0.01" min="0" class="month-input" data-month="${month}" value="${amount}">
-                    </div>
-                `;
+                const monthAmount = campaign.monthlySpend[month] || 0;
+                const weeklyAmount = monthAmount / 4;
+                html += `<div class="week-item">
+                    <label>${month}</label>
+                    <input type="number" step="0.01" min="0" class="month-input" data-month="${month}" value="${monthAmount}">
+                    <small style="color: #6b7280; font-size: 11px;">W1-W4: £${weeklyAmount.toFixed(2)}</small>
+                </div>`;
             });
             
             document.getElementById('monthlyBreakdown').innerHTML = html;
             document.getElementById('editModal').classList.add('active');
         }
         
-        // Close modal
-        function closeModal() {
-            document.getElementById('editModal').classList.remove('active');
-        }
+        function closeModal() { document.getElementById('editModal').classList.remove('active'); }
         
-        // Save changes
         async function saveChanges() {
             const inputs = document.querySelectorAll('.month-input');
             const campaign = campaigns[currentSheet][currentCampaignIndex];
+            const newTargetUnits = parseInt(document.getElementById('editTargetUnits').value) || 0;
             
             for (const input of inputs) {
                 const month = input.dataset.month;
@@ -690,9 +622,26 @@
                             })
                         });
                     } catch(error) {
-                        showError('Failed to save');
+                        alert('Failed to save');
                         return;
                     }
+                }
+            }
+            
+            if (newTargetUnits !== (campaign.targetUnits || 0)) {
+                try {
+                    await fetch(APPS_SCRIPT_URL, {
+                        method: 'POST',
+                        payload: JSON.stringify({
+                            action: 'updateUnits',
+                            sheet: currentSheet,
+                            campaignIndex: currentCampaignIndex,
+                            targetUnits: newTargetUnits
+                        })
+                    });
+                } catch(error) {
+                    alert('Failed to save units');
+                    return;
                 }
             }
             
@@ -700,29 +649,22 @@
             syncData();
         }
         
-        // Show add campaign modal
-        function showAddModal() {
-            document.getElementById('addModal').classList.add('active');
-        }
+        function showAddModal() { document.getElementById('addModal').classList.add('active'); }
+        function closeAddModal() { document.getElementById('addModal').classList.remove('active'); }
         
-        // Close add modal
-        function closeAddModal() {
-            document.getElementById('addModal').classList.remove('active');
-        }
-        
-        // Submit add campaign
         async function submitAddCampaign(event) {
             event.preventDefault();
             
             const name = document.getElementById('campaignName').value;
             const category = document.getElementById('campaignCategory').value;
+            const type = document.getElementById('campaignType').value;
+            const targetUnits = parseInt(document.getElementById('targetUnits').value) || 0;
             const budget = parseFloat(document.getElementById('monthlyBudget').value);
             const startMonth = document.getElementById('startMonth').value;
             const duration = parseInt(document.getElementById('duration').value);
             
             const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
             const monthlySpend = {};
-            
             months.forEach(m => monthlySpend[m] = 0);
             
             const startIndex = months.indexOf(startMonth);
@@ -736,22 +678,20 @@
                     payload: JSON.stringify({
                         action: 'addCampaign',
                         sheet: currentSheet,
-                        data: { name, category, monthlySpend }
+                        data: { name, category, type, monthlySpend, targetUnits }
                     })
                 });
                 
                 closeAddModal();
-                document.getElementById('addCampaignForm').reset();
+                document.getElementById('campaignName').value = '';
                 syncData();
             } catch(error) {
-                showError('Failed to add campaign');
+                alert('Failed to add campaign');
             }
         }
         
-        // Delete campaign
         async function deleteCampaign(index) {
             if (!confirm('Delete this campaign?')) return;
-            
             try {
                 await fetch(APPS_SCRIPT_URL, {
                     method: 'POST',
@@ -761,25 +701,24 @@
                         campaignIndex: index
                     })
                 });
-                
                 syncData();
             } catch(error) {
-                showError('Failed to delete');
+                alert('Failed to delete');
             }
         }
         
-        // Export to CSV
         function exportCSV() {
             const list = campaigns[currentSheet] || [];
             const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
-            const headers = ['Campaign', 'Category', ...months, 'Annual'];
+            const headers = ['Campaign', 'Category', 'Type', 'Target Units', ...months, 'Annual Spend', 'Cost Per Unit'];
             
             let csv = headers.join(',') + '\n';
-            
             list.forEach(c => {
-                const row = [c.name, c.category];
+                const costPerUnit = (c.targetUnits || 0) > 0 ? ((c.totalSpend || 0) / c.targetUnits).toFixed(2) : '0.00';
+                const row = [c.name, c.category, c.type || '', c.targetUnits || 0];
                 months.forEach(m => row.push(c.monthlySpend[m] || 0));
                 row.push(c.totalSpend || 0);
+                row.push(costPerUnit);
                 csv += row.join(',') + '\n';
             });
             
@@ -791,15 +730,9 @@
             a.click();
         }
         
-        // Update time
         function updateTime() {
             const now = new Date().toLocaleTimeString('en-GB');
             document.getElementById('lastUpdate').textContent = now;
-        }
-        
-        // Show error
-        function showError(msg) {
-            alert(msg);
         }
     </script>
 </body>
