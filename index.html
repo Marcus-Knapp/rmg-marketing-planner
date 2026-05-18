@@ -274,20 +274,24 @@
                 group.className = 'campaign-group';
                 
                 let html = `<div class="group-header">${type}<span>▼</span></div><div class="table-wrapper"><table><thead><tr><th>Campaign</th>`;
-                for (let i = 1; i <= 12; i++) {
-                    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-                    html += `<th class="month-header">${months[i-1]}</th>`;
-                }
-                html += `<th class="month-header">Total</th></tr></thead><tbody>`;
+                html += `<th class="quarter-header">Q1<br>(Jan-Mar)</th>`;
+                html += `<th class="quarter-header">Q2<br>(Apr-Jun)</th>`;
+                html += `<th class="quarter-header">Q3<br>(Jul-Sep)</th>`;
+                html += `<th class="quarter-header">Q4<br>(Oct-Dec)</th>`;
+                html += `<th class="month-header">Annual</th></tr></thead><tbody>`;
                 
                 grouped[type].forEach(c => {
                     html += `<tr><td class="campaign-name" onclick="openEditModal('${c.name}')">${c.name}</td>`;
-                    let total = 0;
-                    for (let i = 3; i <= 14; i++) {
-                        const val = c[i] || 0;
-                        total += val;
-                        html += `<td>£${val.toLocaleString()}</td>`;
-                    }
+                    const q1 = (c[3] || 0) + (c[4] || 0) + (c[5] || 0);
+                    const q2 = (c[6] || 0) + (c[7] || 0) + (c[8] || 0);
+                    const q3 = (c[9] || 0) + (c[10] || 0) + (c[11] || 0);
+                    const q4 = (c[12] || 0) + (c[13] || 0) + (c[14] || 0);
+                    const total = q1 + q2 + q3 + q4;
+                    
+                    html += `<td>£${q1.toLocaleString()}</td>`;
+                    html += `<td>£${q2.toLocaleString()}</td>`;
+                    html += `<td>£${q3.toLocaleString()}</td>`;
+                    html += `<td>£${q4.toLocaleString()}</td>`;
                     html += `<td class="month-total">£${total.toLocaleString()}</td></tr>`;
                 });
                 
@@ -399,19 +403,23 @@
             const group = document.createElement('div');
             group.className = 'campaign-group';
             let html = `<div class="group-header">${type}<span>▼</span></div><div class="table-wrapper"><table><thead><tr><th>Campaign</th>`;
-            for (let i = 1; i <= 12; i++) {
-                const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-                html += `<th class="month-header">${months[i-1]}</th>`;
-            }
-            html += `<th class="month-header">Total</th></tr></thead><tbody>`;
+            html += `<th class="quarter-header">Q1<br>(Jan-Mar)</th>`;
+            html += `<th class="quarter-header">Q2<br>(Apr-Jun)</th>`;
+            html += `<th class="quarter-header">Q3<br>(Jul-Sep)</th>`;
+            html += `<th class="quarter-header">Q4<br>(Oct-Dec)</th>`;
+            html += `<th class="month-header">Annual</th></tr></thead><tbody>`;
             filtered.forEach(c => {
                 html += `<tr><td class="campaign-name" onclick="openEditModal('${c.name}')">${c.name}</td>`;
-                let total = 0;
-                for (let i = 3; i <= 14; i++) {
-                    const val = c[i] || 0;
-                    total += val;
-                    html += `<td>£${val.toLocaleString()}</td>`;
-                }
+                const q1 = (c[3] || 0) + (c[4] || 0) + (c[5] || 0);
+                const q2 = (c[6] || 0) + (c[7] || 0) + (c[8] || 0);
+                const q3 = (c[9] || 0) + (c[10] || 0) + (c[11] || 0);
+                const q4 = (c[12] || 0) + (c[13] || 0) + (c[14] || 0);
+                const total = q1 + q2 + q3 + q4;
+                
+                html += `<td>£${q1.toLocaleString()}</td>`;
+                html += `<td>£${q2.toLocaleString()}</td>`;
+                html += `<td>£${q3.toLocaleString()}</td>`;
+                html += `<td>£${q4.toLocaleString()}</td>`;
                 html += `<td class="month-total">£${total.toLocaleString()}</td></tr>`;
             });
             html += `</tbody></table></div>`;
