@@ -3,75 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Marketing Planner Dashboard</title>
+    <title>Read Hyundai Marketing Planner</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto; background-color: #f9fafb; color: #1f2937; }
-        .container { max-width: 1600px; margin: 0 auto; padding: 20px; }
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; padding: 25px; background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%); border-radius: 12px; color: white; gap: 20px; flex-wrap: wrap; }
+        body { font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif; background: #f9fafb; color: #1f2937; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 25px; background: linear-gradient(135deg, #003da5 0%, #001f4d 100%); border-radius: 12px; color: white; margin-bottom: 30px; flex-wrap: wrap; gap: 20px; }
         .header h1 { font-size: 28px; }
-        .header-controls { display: flex; gap: 10px; flex-wrap: wrap; }
-        .header-metrics { display: flex; gap: 30px; align-items: center; }
+        .header-metrics { display: flex; gap: 40px; }
         .metric { display: flex; flex-direction: column; }
         .metric-label { font-size: 11px; opacity: 0.8; text-transform: uppercase; }
-        .metric-value { font-size: 20px; font-weight: 700; }
+        .metric-value { font-size: 22px; font-weight: 700; }
+        .header-controls { display: flex; gap: 10px; }
         .btn { padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 600; transition: all 0.3s; }
-        .btn-primary { background: white; color: #2563eb; }
+        .btn-primary { background: white; color: #003da5; }
         .btn-primary:hover { background: #f3f4f6; }
-        .btn-success { background: #10b981; color: white; }
-        .btn-success:hover { background: #059669; }
+        .btn-success { background: #003da5; color: white; }
+        .btn-success:hover { background: #001f4d; }
         .btn-danger { background: #ef4444; color: white; padding: 6px 12px; font-size: 12px; }
-        .summary-section { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 30px; }
-        .summary-card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border-left: 4px solid #2563eb; }
-        .summary-card h3 { font-size: 13px; color: #6b7280; margin-bottom: 10px; font-weight: 600; }
-        .summary-value { font-size: 24px; font-weight: 700; }
-        .controls { background: white; padding: 20px; border-radius: 8px; margin-bottom: 30px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); display: flex; flex-wrap: wrap; gap: 15px; align-items: center; }
+        .summary { display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; margin-bottom: 30px; }
+        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border-left: 4px solid #003da5; }
+        .card h3 { font-size: 12px; color: #6b7280; margin-bottom: 10px; font-weight: 600; }
+        .card-value { font-size: 22px; font-weight: 700; }
+        .controls { background: white; padding: 20px; border-radius: 8px; margin-bottom: 30px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); display: flex; gap: 15px; align-items: center; flex-wrap: wrap; }
         select, input { padding: 10px 12px; border: 1px solid #e5e7eb; border-radius: 6px; font-size: 14px; }
-        select:focus, input:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
-        .search-box { flex: 1; min-width: 200px; }
-        .campaign-group { background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 20px; }
-        .group-header { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; padding: 15px 20px; font-weight: 700; font-size: 16px; }
+        select:focus, input:focus { outline: none; border-color: #003da5; box-shadow: 0 0 0 3px rgba(0, 61, 165, 0.1); }
+        .table-container { background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1); overflow-x: auto; }
         table { width: 100%; border-collapse: collapse; }
         thead { background: #f3f4f6; border-bottom: 2px solid #e5e7eb; }
         th { padding: 12px; text-align: left; font-size: 12px; font-weight: 700; text-transform: uppercase; }
         td { padding: 12px; border-bottom: 1px solid #e5e7eb; text-align: right; }
-        td:first-child { text-align: left; cursor: pointer; color: #2563eb; font-weight: 600; }
+        td:first-child { text-align: left; cursor: pointer; color: #003da5; font-weight: 600; }
         td:first-child:hover { text-decoration: underline; }
+        tbody tr:hover { background: #f9fafb; }
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; }
         .modal.active { display: flex; }
-        .modal-content { background: white; padding: 30px; border-radius: 12px; width: 90%; max-width: 700px; max-height: 90vh; overflow-y: auto; }
+        .modal-content { background: white; padding: 30px; border-radius: 12px; width: 90%; max-width: 600px; max-height: 90vh; overflow-y: auto; }
         .close { color: #6b7280; float: right; font-size: 28px; cursor: pointer; }
         .form-group { margin-bottom: 20px; }
         .form-group label { display: block; margin-bottom: 8px; font-weight: 600; }
-        .form-group input, .form-group select { width: 100%; padding: 10px 12px; border: 1px solid #e5e7eb; border-radius: 6px; font-size: 14px; }
-        .quarterly-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
-        .quarter-item { background: #f3f4f6; padding: 10px; border-radius: 6px; }
-        .quarter-item label { display: block; margin-bottom: 4px; font-size: 11px; font-weight: 600; }
-        .quarter-item input { width: 100%; font-size: 12px; padding: 6px; }
+        .form-group input { width: 100%; padding: 10px 12px; border: 1px solid #e5e7eb; border-radius: 6px; }
+        .month-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 20px; }
+        .month-item { background: #f3f4f6; padding: 12px; border-radius: 6px; }
+        .month-item label { font-size: 11px; margin-bottom: 4px; display: block; }
+        .month-item input { width: 100%; padding: 6px; font-size: 12px; }
         .modal-buttons { display: flex; gap: 10px; margin-top: 20px; }
         .modal-buttons button { flex: 1; }
-        @media (max-width: 768px) { 
-            .header { flex-direction: column; } 
-            .header-metrics { flex-direction: column; align-items: flex-start; }
-            .controls { flex-direction: column; align-items: stretch; } 
+        @media (max-width: 768px) {
+            .summary { grid-template-columns: repeat(2, 1fr); }
+            .controls { flex-direction: column; align-items: stretch; }
             select, input { width: 100%; }
+            .month-grid { grid-template-columns: repeat(2, 1fr); }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <header class="header">
-            <div>
-                <h1>📊 Marketing Planner 2026</h1>
-            </div>
+            <img src="data:image/png;base64,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" alt="Read Motor Group" style="height: 40px; margin-right: 20px;">
+            <h1>📊 Read Hyundai Marketing Planner</h1>
             <div class="header-metrics">
                 <div class="metric">
                     <div class="metric-label">No of Target Units</div>
-                    <div class="metric-value" id="headerTargetUnits">0</div>
+                    <div class="metric-value" id="targetUnits">0</div>
                 </div>
                 <div class="metric">
                     <div class="metric-label">Spend Per Unit £</div>
-                    <div class="metric-value" id="headerSpendPerUnit">£0.00</div>
+                    <div class="metric-value" id="spendPerUnit">£0.00</div>
                 </div>
             </div>
             <div class="header-controls">
@@ -79,29 +77,44 @@
                 <button class="btn btn-primary" onclick="exportCSV()">⬇️ Export</button>
             </div>
         </header>
-        
-        <section class="summary-section">
-            <div class="summary-card"><h3>Total Spend</h3><p class="summary-value" id="totalSpend">£0.00</p></div>
-            <div class="summary-card"><h3>Q1 Spend</h3><p class="summary-value" id="q1Spend">£0.00</p></div>
-            <div class="summary-card"><h3>Q2 Spend</h3><p class="summary-value" id="q2Spend">£0.00</p></div>
-            <div class="summary-card"><h3>Q3 Spend</h3><p class="summary-value" id="q3Spend">£0.00</p></div>
-            <div class="summary-card"><h3>Q4 Spend</h3><p class="summary-value" id="q4Spend">£0.00</p></div>
-        </section>
-        
-        <div class="controls">
-            <select id="sheetSelect" onchange="changeSheet(this.value)"><option value="">Loading...</option></select>
-            <input type="text" id="searchInput" class="search-box" placeholder="🔍 Search campaigns..." onkeyup="filterCampaigns()">
-            <button class="btn btn-success" onclick="showAddModal()">+ Add Campaign</button>
+
+        <div class="summary">
+            <div class="card"><h3>Total Annual Spend</h3><div class="card-value" id="totalSpend">£0.00</div></div>
+            <div class="card"><h3>Q1 Spend</h3><div class="card-value" id="q1">£0.00</div></div>
+            <div class="card"><h3>Q2 Spend</h3><div class="card-value" id="q2">£0.00</div></div>
+            <div class="card"><h3>Q3 Spend</h3><div class="card-value" id="q3">£0.00</div></div>
+            <div class="card"><h3>Q4 Spend</h3><div class="card-value" id="q4">£0.00</div></div>
         </div>
-        
-        <div id="campaignContainer"></div>
+
+        <div class="controls">
+            <select id="sheetSelect" onchange="changeSheet(this.value)"><option>Loading...</option></select>
+            <input type="text" id="search" placeholder="🔍 Search campaigns..." onkeyup="renderTable()">
+            <button class="btn btn-success">+ Add Campaign</button>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Campaign</th>
+                        <th>Category</th>
+                        <th>Q1</th>
+                        <th>Q2</th>
+                        <th>Q3</th>
+                        <th>Q4</th>
+                        <th>Annual</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+        </div>
     </div>
 
     <!-- Edit Modal -->
     <div id="editModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal()">&times;</span>
-            <h2>Edit Campaign</h2>
+            <h2 id="modalTitle">Edit Campaign</h2>
             <div class="form-group">
                 <label>Campaign Name</label>
                 <input type="text" id="editName" readonly>
@@ -111,183 +124,102 @@
                 <input type="text" id="editCategory" readonly>
             </div>
             <div class="form-group">
-                <label>Type</label>
-                <input type="text" id="editType" readonly>
-            </div>
-            <div class="form-group">
-                <label>Quarterly Spend (£)</label>
-                <div class="quarterly-grid">
-                    <div class="quarter-item">
-                        <label>Q1</label>
-                        <input type="number" id="editQ1" min="0" step="0.01">
-                    </div>
-                    <div class="quarter-item">
-                        <label>Q2</label>
-                        <input type="number" id="editQ2" min="0" step="0.01">
-                    </div>
-                    <div class="quarter-item">
-                        <label>Q3</label>
-                        <input type="number" id="editQ3" min="0" step="0.01">
-                    </div>
-                    <div class="quarter-item">
-                        <label>Q4</label>
-                        <input type="number" id="editQ4" min="0" step="0.01">
-                    </div>
-                </div>
+                <label>Monthly Spend (£)</label>
+                <div class="month-grid" id="monthInputs"></div>
             </div>
             <div class="modal-buttons">
-                <button class="btn btn-success" onclick="saveChanges()">Save Changes</button>
+                <button class="btn btn-success" onclick="saveChanges()">Save</button>
                 <button class="btn btn-primary" onclick="closeModal()">Cancel</button>
-                <button class="btn btn-danger" onclick="deleteCurrentCampaign()">Delete</button>
             </div>
-        </div>
-    </div>
-    
-    <!-- Add Modal -->
-    <div id="addModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeAddModal()">&times;</span>
-            <h2>Add New Campaign</h2>
-            <form onsubmit="submitAddCampaign(event)">
-                <div class="form-group">
-                    <label>Campaign Name *</label>
-                    <input type="text" id="newName" required>
-                </div>
-                <div class="form-group">
-                    <label>Category *</label>
-                    <select id="newCategory" required>
-                        <option value="">Select...</option>
-                        <option value="New">New</option>
-                        <option value="Used">Used</option>
-                        <option value="Service">Service</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Type</label>
-                    <input type="text" id="newType" placeholder="e.g., Digital, Social, Events">
-                </div>
-                <div class="form-group">
-                    <label>Quarterly Spend (£)</label>
-                    <div class="quarterly-grid">
-                        <div class="quarter-item">
-                            <label>Q1</label>
-                            <input type="number" id="newQ1" min="0" step="0.01" value="0">
-                        </div>
-                        <div class="quarter-item">
-                            <label>Q2</label>
-                            <input type="number" id="newQ2" min="0" step="0.01" value="0">
-                        </div>
-                        <div class="quarter-item">
-                            <label>Q3</label>
-                            <input type="number" id="newQ3" min="0" step="0.01" value="0">
-                        </div>
-                        <div class="quarter-item">
-                            <label>Q4</label>
-                            <input type="number" id="newQ4" min="0" step="0.01" value="0">
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-buttons">
-                    <button type="submit" class="btn btn-success">Create</button>
-                    <button type="button" class="btn btn-primary" onclick="closeAddModal()">Cancel</button>
-                </div>
-            </form>
         </div>
     </div>
 
     <script>
         const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxkZrd7nkIef04OdcXv-R0SyFddP5vLgtbC4h7oAoYrw-fjaGktT1mVOZsC_ecUDil7/exec';
-        let campaigns = {}, currentSheet = null, currentCampaignIndex = null, summary = {};
-        
-        document.addEventListener('DOMContentLoaded', () => { 
-            loadSheets();
-            setInterval(syncData, 300000);
-        });
-        
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        let data = {}, currentSheet = null, currentIndex = null;
+
+        document.addEventListener('DOMContentLoaded', loadSheets);
+
         async function loadSheets() {
             try {
                 const response = await fetch(`${APPS_SCRIPT_URL}?action=getSheets`);
                 const sheets = await response.json();
                 const select = document.getElementById('sheetSelect');
-                select.innerHTML = '<option value="">Select Location...</option>';
+                select.innerHTML = '';
                 sheets.forEach(s => {
-                    const option = document.createElement('option');
-                    option.value = s.name;
-                    option.textContent = s.name;
-                    select.appendChild(option);
+                    const opt = document.createElement('option');
+                    opt.value = s.name;
+                    opt.textContent = s.name;
+                    select.appendChild(opt);
                 });
-            } catch(e) { console.error(e); }
+            } catch (e) { console.error(e); }
         }
-        
+
         async function changeSheet(sheetName) {
             currentSheet = sheetName;
-            if (!currentSheet) return;
             await syncData();
         }
-        
+
         async function syncData() {
             if (!currentSheet) return;
             try {
-                const response = await fetch(`${APPS_SCRIPT_URL}?action=getCampaigns&sheet=${encodeURIComponent(currentSheet)}`);
-                campaigns[currentSheet] = await response.json();
-                
-                const summaryResp = await fetch(`${APPS_SCRIPT_URL}?action=getSummary&sheet=${encodeURIComponent(currentSheet)}`);
-                summary = await summaryResp.json();
-                
-                updateUI();
-            } catch(e) { console.error(e); }
+                const res = await fetch(`${APPS_SCRIPT_URL}?action=getCampaigns&sheet=${encodeURIComponent(currentSheet)}`);
+                data[currentSheet] = await res.json();
+
+                const summaryRes = await fetch(`${APPS_SCRIPT_URL}?action=getSummary&sheet=${encodeURIComponent(currentSheet)}`);
+                const summary = await summaryRes.json();
+
+                updateHeader(summary);
+                renderTable();
+            } catch (e) { console.error(e); }
         }
-        
-        function updateUI() {
+
+        function updateHeader(summary) {
             const formatter = new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' });
-            const list = campaigns[currentSheet] || [];
+            const list = data[currentSheet] || [];
             
             let q1 = 0, q2 = 0, q3 = 0, q4 = 0, total = 0;
             list.forEach(c => {
-                if (!c.name.toLowerCase().includes('total')) {
-                    q1 += (c[3] || 0) + (c[4] || 0) + (c[5] || 0);
-                    q2 += (c[6] || 0) + (c[7] || 0) + (c[8] || 0);
-                    q3 += (c[9] || 0) + (c[10] || 0) + (c[11] || 0);
-                    q4 += (c[12] || 0) + (c[13] || 0) + (c[14] || 0);
-                    total += c[14] || 0;
-                }
+                if (!c.name || c.name.toLowerCase().includes('total')) return;
+                q1 += (c[2] || 0) + (c[3] || 0) + (c[4] || 0);
+                q2 += (c[5] || 0) + (c[6] || 0) + (c[7] || 0);
+                q3 += (c[8] || 0) + (c[9] || 0) + (c[10] || 0);
+                q4 += (c[11] || 0) + (c[12] || 0) + (c[13] || 0);
+                total += c[14] || 0;
             });
-            
+
             const targetUnits = summary.targetUnits || 0;
             const spendPerUnit = targetUnits > 0 ? total / targetUnits : 0;
-            
-            document.getElementById('headerTargetUnits').textContent = targetUnits.toLocaleString();
-            document.getElementById('headerSpendPerUnit').textContent = formatter.format(spendPerUnit);
+
+            document.getElementById('targetUnits').textContent = targetUnits.toLocaleString();
+            document.getElementById('spendPerUnit').textContent = formatter.format(spendPerUnit);
             document.getElementById('totalSpend').textContent = formatter.format(total);
-            document.getElementById('q1Spend').textContent = formatter.format(q1);
-            document.getElementById('q2Spend').textContent = formatter.format(q2);
-            document.getElementById('q3Spend').textContent = formatter.format(q3);
-            document.getElementById('q4Spend').textContent = formatter.format(q4);
-            
-            renderCampaigns();
+            document.getElementById('q1').textContent = formatter.format(q1);
+            document.getElementById('q2').textContent = formatter.format(q2);
+            document.getElementById('q3').textContent = formatter.format(q3);
+            document.getElementById('q4').textContent = formatter.format(q4);
         }
-        
-        function renderCampaigns() {
+
+        function renderTable() {
             const formatter = new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' });
-            const list = campaigns[currentSheet] || [];
-            
-            let html = `<div class="campaign-group"><div class="group-header">All Campaigns</div>
-                <div style="overflow-x: auto;"><table>
-                <thead><tr><th>Campaign</th><th>Category</th><th>Type</th><th>Q1</th><th>Q2</th><th>Q3</th><th>Q4</th><th>Annual</th></tr></thead>
-                <tbody>`;
-            
+            const list = data[currentSheet] || [];
+            const search = document.getElementById('search').value.toLowerCase();
+            let html = '';
+
             list.forEach((c, i) => {
-                if (c.name.toLowerCase().includes('total')) return;
-                const q1 = (c[3] || 0) + (c[4] || 0) + (c[5] || 0);
-                const q2 = (c[6] || 0) + (c[7] || 0) + (c[8] || 0);
-                const q3 = (c[9] || 0) + (c[10] || 0) + (c[11] || 0);
-                const q4 = (c[12] || 0) + (c[13] || 0) + (c[14] || 0);
+                if (!c.name || c.name.toLowerCase().includes('total')) return;
+                if (search && !c.name.toLowerCase().includes(search)) return;
+
+                const q1 = (c[2] || 0) + (c[3] || 0) + (c[4] || 0);
+                const q2 = (c[5] || 0) + (c[6] || 0) + (c[7] || 0);
+                const q3 = (c[8] || 0) + (c[9] || 0) + (c[10] || 0);
+                const q4 = (c[11] || 0) + (c[12] || 0) + (c[13] || 0);
                 const annual = c[14] || 0;
-                
+
                 html += `<tr>
-                    <td onclick="showEditModal(${i})">${c.name}</td>
-                    <td>${c.category || '-'}</td>
-                    <td>${c.type || '-'}</td>
+                    <td onclick="editCampaign(${i})">${c.name}</td>
+                    <td>${c[1] || '-'}</td>
                     <td>${formatter.format(q1)}</td>
                     <td>${formatter.format(q2)}</td>
                     <td>${formatter.format(q3)}</td>
@@ -295,150 +227,67 @@
                     <td><strong>${formatter.format(annual)}</strong></td>
                 </tr>`;
             });
-            
-            html += `</tbody></table></div></div>`;
-            document.getElementById('campaignContainer').innerHTML = html;
+
+            document.getElementById('tableBody').innerHTML = html;
         }
-        
-        function filterCampaigns() {
-            const search = document.getElementById('searchInput').value.toLowerCase();
-            if (!search) { renderCampaigns(); return; }
+
+        function editCampaign(index) {
+            currentIndex = index;
+            const c = data[currentSheet][index];
+            document.getElementById('editName').value = c.name || '';
+            document.getElementById('editCategory').value = c[1] || '';
             
-            const list = campaigns[currentSheet] || [];
-            let html = `<div class="campaign-group"><div class="group-header">Search Results</div>
-                <div style="overflow-x: auto;"><table>
-                <thead><tr><th>Campaign</th><th>Category</th><th>Type</th><th>Q1</th><th>Q2</th><th>Q3</th><th>Q4</th><th>Annual</th></tr></thead>
-                <tbody>`;
-            
-            const formatter = new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' });
-            list.forEach((c, i) => {
-                if (!c.name.toLowerCase().includes(search) || c.name.toLowerCase().includes('total')) return;
-                const q1 = (c[3] || 0) + (c[4] || 0) + (c[5] || 0);
-                const q2 = (c[6] || 0) + (c[7] || 0) + (c[8] || 0);
-                const q3 = (c[9] || 0) + (c[10] || 0) + (c[11] || 0);
-                const q4 = (c[12] || 0) + (c[13] || 0) + (c[14] || 0);
-                const annual = c[14] || 0;
-                
-                html += `<tr>
-                    <td onclick="showEditModal(${i})">${c.name}</td>
-                    <td>${c.category || '-'}</td>
-                    <td>${c.type || '-'}</td>
-                    <td>${formatter.format(q1)}</td>
-                    <td>${formatter.format(q2)}</td>
-                    <td>${formatter.format(q3)}</td>
-                    <td>${formatter.format(q4)}</td>
-                    <td><strong>${formatter.format(annual)}</strong></td>
-                </tr>`;
-            });
-            
-            html += `</tbody></table></div></div>`;
-            document.getElementById('campaignContainer').innerHTML = html;
-        }
-        
-        function showEditModal(index) {
-            currentCampaignIndex = index;
-            const c = campaigns[currentSheet][index];
-            document.getElementById('editName').value = c.name;
-            document.getElementById('editCategory').value = c.category || '';
-            document.getElementById('editType').value = c.type || '';
-            document.getElementById('editQ1').value = ((c[3] || 0) + (c[4] || 0) + (c[5] || 0)).toFixed(2);
-            document.getElementById('editQ2').value = ((c[6] || 0) + (c[7] || 0) + (c[8] || 0)).toFixed(2);
-            document.getElementById('editQ3').value = ((c[9] || 0) + (c[10] || 0) + (c[11] || 0)).toFixed(2);
-            document.getElementById('editQ4').value = ((c[12] || 0) + (c[13] || 0) + (c[14] || 0)).toFixed(2);
+            let monthInputs = '';
+            for (let i = 0; i < 12; i++) {
+                monthInputs += `<div class="month-item">
+                    <label>${months[i]}</label>
+                    <input type="number" id="m${i}" value="${(c[i + 2] || 0).toFixed(2)}" min="0" step="0.01">
+                </div>`;
+            }
+            document.getElementById('monthInputs').innerHTML = monthInputs;
             document.getElementById('editModal').classList.add('active');
         }
-        
-        function closeModal() {
-            document.getElementById('editModal').classList.remove('active');
-        }
-        
+
         async function saveChanges() {
-            const q1 = parseFloat(document.getElementById('editQ1').value) || 0;
-            const q2 = parseFloat(document.getElementById('editQ2').value) || 0;
-            const q3 = parseFloat(document.getElementById('editQ3').value) || 0;
-            const q4 = parseFloat(document.getElementById('editQ4').value) || 0;
-            
+            const newValues = [];
+            for (let i = 0; i < 12; i++) {
+                newValues.push(parseFloat(document.getElementById(`m${i}`).value) || 0);
+            }
+
             try {
                 await fetch(APPS_SCRIPT_URL, {
                     method: 'POST',
                     body: JSON.stringify({
                         action: 'updateSpend',
                         sheet: currentSheet,
-                        campaignIndex: currentCampaignIndex,
-                        q1, q2, q3, q4
+                        campaignIndex: currentIndex,
+                        months: newValues
                     })
                 });
                 closeModal();
                 syncData();
-            } catch(e) { alert('Failed to save'); }
+            } catch (e) { alert('Failed to save'); }
         }
-        
-        async function deleteCurrentCampaign() {
-            if (!confirm('Delete this campaign?')) return;
-            try {
-                await fetch(APPS_SCRIPT_URL, {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        action: 'deleteCampaign',
-                        sheet: currentSheet,
-                        campaignIndex: currentCampaignIndex
-                    })
-                });
-                syncData();
-                closeModal();
-            } catch(e) { alert('Failed to delete'); }
+
+        function closeModal() {
+            document.getElementById('editModal').classList.remove('active');
         }
-        
-        function showAddModal() {
-            document.getElementById('addModal').classList.add('active');
-        }
-        
-        function closeAddModal() {
-            document.getElementById('addModal').classList.remove('active');
-        }
-        
-        async function submitAddCampaign(e) {
-            e.preventDefault();
-            const name = document.getElementById('newName').value;
-            const category = document.getElementById('newCategory').value;
-            const type = document.getElementById('newType').value;
-            const q1 = parseFloat(document.getElementById('newQ1').value) || 0;
-            const q2 = parseFloat(document.getElementById('newQ2').value) || 0;
-            const q3 = parseFloat(document.getElementById('newQ3').value) || 0;
-            const q4 = parseFloat(document.getElementById('newQ4').value) || 0;
-            
-            try {
-                await fetch(APPS_SCRIPT_URL, {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        action: 'addCampaign',
-                        sheet: currentSheet,
-                        data: { name, category, type, q1, q2, q3, q4 }
-                    })
-                });
-                closeAddModal();
-                document.getElementById('newName').value = '';
-                syncData();
-            } catch(e) { alert('Failed to add'); }
-        }
-        
+
         function exportCSV() {
-            const list = campaigns[currentSheet] || [];
-            let csv = 'Campaign,Category,Type,Q1,Q2,Q3,Q4,Annual\n';
+            const list = data[currentSheet] || [];
+            let csv = 'Campaign,Category,' + months.join(',') + ',Annual\n';
             list.forEach(c => {
-                if (c.name.toLowerCase().includes('total')) return;
-                const q1 = (c[3] || 0) + (c[4] || 0) + (c[5] || 0);
-                const q2 = (c[6] || 0) + (c[7] || 0) + (c[8] || 0);
-                const q3 = (c[9] || 0) + (c[10] || 0) + (c[11] || 0);
-                const q4 = (c[12] || 0) + (c[13] || 0) + (c[14] || 0);
-                const annual = c[14] || 0;
-                csv += `"${c.name}","${c.category}","${c.type}",${q1},${q2},${q3},${q4},${annual}\n`;
+                if (!c.name || c.name.toLowerCase().includes('total')) return;
+                let row = `"${c.name}","${c[1] || ''}"`;
+                for (let i = 2; i <= 14; i++) {
+                    row += ',' + (c[i] || 0);
+                }
+                csv += row + '\n';
             });
             const blob = new Blob([csv], { type: 'text/csv' });
-            const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
-            a.href = url;
-            a.download = `marketing-plan-${currentSheet}-${new Date().toISOString().split('T')[0]}.csv`;
+            a.href = URL.createObjectURL(blob);
+            a.download = `plan-${currentSheet}.csv`;
             a.click();
         }
     </script>
