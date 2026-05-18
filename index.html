@@ -76,6 +76,12 @@
                 <button class="btn btn-primary" onclick="exportCSV()">Export CSV</button>
             </div>
         </header>
+        
+        <div id="debugBox" style="background: #fee; padding: 15px; margin-bottom: 20px; border-radius: 8px; display: none;">
+            <strong>Debug Info:</strong>
+            <p id="debugText"></p>
+            <p style="font-size: 11px; color: #666;">Apps Script URL: <code id="urlDebug"></code></p>
+        </div>
 
         <div class="summary-section" id="summaryCards"></div>
 
@@ -165,23 +171,37 @@
     </div>
 
     <script>
-        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyyR4xzUcmFdwR0MMV6Pe6z5wHQzvq-YFR8H1sKw4l0_WB4Lf7WSnmlTOz4w56_vyE3/exec';
+        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxIrjvefvwRLSr0-NrvM3P9gAyhj0-gt9l3l1ZWaDBLnKrFFw7pbTAe2cLJWjYI3Chv/exec';
         let currentSheet = '';
         let campaignsData = [];
+        
+        function showDebug(msg) {
+            document.getElementById('debugBox').style.display = 'block';
+            document.getElementById('debugText').innerHTML += msg + '<br>';
+            document.getElementById('urlDebug').textContent = APPS_SCRIPT_URL;
+        }
 
         async function loadSheets() {
+            showDebug('Loading sheets...');
             try {
                 const response = await fetch(`${APPS_SCRIPT_URL}?action=getSheets`);
-                const data = await response.json();
+                const text = await response.text();
+                showDebug('Response status: ' + response.status);
+                showDebug('Response text: ' + text.substring(0, 200));
+                const data = JSON.parse(text);
                 const select = document.getElementById('sheetSelect');
                 select.innerHTML = '<option>Select Location...</option>';
-                data.sheets.forEach(sheet => {
-                    const option = document.createElement('option');
-                    option.value = sheet;
-                    option.textContent = sheet;
-                    select.appendChild(option);
-                });
+                if (Array.isArray(data)) {
+                    data.forEach(sheet => {
+                        const option = document.createElement('option');
+                        option.value = sheet.name;
+                        option.textContent = sheet.name;
+                        select.appendChild(option);
+                    });
+                    showDebug('Loaded ' + data.length + ' sheets');
+                }
             } catch (error) {
+                showDebug('ERROR: ' + error.message);
                 console.error('Error loading sheets:', error);
             }
         }
@@ -197,8 +217,10 @@
         async function loadCampaigns() {
             try {
                 const response = await fetch(`${APPS_SCRIPT_URL}?action=getCampaigns&sheet=${encodeURIComponent(currentSheet)}`);
-                const data = await response.json();
-                campaignsData = data.campaigns;
+                const text = await response.text();
+                console.log('Campaigns response:', text);
+                const data = JSON.parse(text);
+                campaignsData = Array.isArray(data) ? data : (data.campaigns || []);
                 renderCampaigns();
             } catch (error) {
                 console.error('Error loading campaigns:', error);
