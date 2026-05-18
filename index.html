@@ -90,6 +90,7 @@
             <select id="sheetSelect" onchange="changeSheet(this.value)"><option>Loading...</option></select>
             <input type="text" id="search" placeholder="🔍 Search campaigns..." onkeyup="renderTable()">
             <button class="btn btn-success">+ Add Campaign</button>
+            <button class="btn btn-primary" onclick="testAPI()">🧪 Test API</button>
         </div>
 
         <div class="table-container">
@@ -312,6 +313,21 @@
             a.href = URL.createObjectURL(blob);
             a.download = `plan-${currentSheet}.csv`;
             a.click();
+        }
+
+        async function testAPI() {
+            console.log('Testing API...');
+            try {
+                console.log('Calling: ' + APPS_SCRIPT_URL + '?action=getSheets');
+                const res = await fetch(APPS_SCRIPT_URL + '?action=getSheets');
+                console.log('Status: ' + res.status);
+                const text = await res.text();
+                console.log('Response: ' + text);
+                alert('API Response:\n' + text);
+            } catch (e) {
+                console.error('API Error: ' + e);
+                alert('API Error: ' + e.message);
+            }
         }
     </script>
 </body>
