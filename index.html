@@ -206,13 +206,14 @@
             const list = data[currentSheet] || [];
             
             let q1 = 0, q2 = 0, q3 = 0, q4 = 0, total = 0;
-            list.forEach(c => {
-                if (!c.name || c.name.toLowerCase().includes('total')) return;
-                q1 += (c[2] || 0) + (c[3] || 0) + (c[4] || 0);
-                q2 += (c[5] || 0) + (c[6] || 0) + (c[7] || 0);
-                q3 += (c[8] || 0) + (c[9] || 0) + (c[10] || 0);
-                q4 += (c[11] || 0) + (c[12] || 0) + (c[13] || 0);
-                total += c[14] || 0;
+            list.forEach(row => {
+                if (!row[0] || row[0].toString().toLowerCase().includes('total')) return;
+                
+                q1 += (parseFloat(row[2]) || 0) + (parseFloat(row[3]) || 0) + (parseFloat(row[4]) || 0);
+                q2 += (parseFloat(row[5]) || 0) + (parseFloat(row[6]) || 0) + (parseFloat(row[7]) || 0);
+                q3 += (parseFloat(row[8]) || 0) + (parseFloat(row[9]) || 0) + (parseFloat(row[10]) || 0);
+                q4 += (parseFloat(row[11]) || 0) + (parseFloat(row[12]) || 0) + (parseFloat(row[13]) || 0);
+                total += parseFloat(row[14]) || 0;
             });
 
             const targetUnits = summary.targetUnits || 0;
@@ -233,19 +234,25 @@
             const search = document.getElementById('search').value.toLowerCase();
             let html = '';
 
-            list.forEach((c, i) => {
-                if (!c.name || c.name.toLowerCase().includes('total')) return;
-                if (search && !c.name.toLowerCase().includes(search)) return;
+            list.forEach((row, i) => {
+                // row is an array: [name, category, m1, m2, ..., m12, annual]
+                const name = row[0];
+                const category = row[1];
+                
+                if (!name) return; // Skip empty rows
+                if (name.toString().toLowerCase().includes('total')) return; // Skip totals
+                if (search && !name.toString().toLowerCase().includes(search)) return; // Filter search
 
-                const q1 = (c[2] || 0) + (c[3] || 0) + (c[4] || 0);
-                const q2 = (c[5] || 0) + (c[6] || 0) + (c[7] || 0);
-                const q3 = (c[8] || 0) + (c[9] || 0) + (c[10] || 0);
-                const q4 = (c[11] || 0) + (c[12] || 0) + (c[13] || 0);
-                const annual = c[14] || 0;
+                // Calculate quarterly totals from monthly values
+                const q1 = (parseFloat(row[2]) || 0) + (parseFloat(row[3]) || 0) + (parseFloat(row[4]) || 0);
+                const q2 = (parseFloat(row[5]) || 0) + (parseFloat(row[6]) || 0) + (parseFloat(row[7]) || 0);
+                const q3 = (parseFloat(row[8]) || 0) + (parseFloat(row[9]) || 0) + (parseFloat(row[10]) || 0);
+                const q4 = (parseFloat(row[11]) || 0) + (parseFloat(row[12]) || 0) + (parseFloat(row[13]) || 0);
+                const annual = parseFloat(row[14]) || 0;
 
                 html += `<tr>
-                    <td onclick="editCampaign(${i})">${c.name}</td>
-                    <td>${c[1] || '-'}</td>
+                    <td onclick="editCampaign(${i})">${name}</td>
+                    <td>${category || '-'}</td>
                     <td>${formatter.format(q1)}</td>
                     <td>${formatter.format(q2)}</td>
                     <td>${formatter.format(q3)}</td>
@@ -254,6 +261,7 @@
                 </tr>`;
             });
 
+            if (!html) html = '<tr><td colspan="7">No campaigns found</td></tr>';
             document.getElementById('tableBody').innerHTML = html;
         }
 
