@@ -6,168 +6,291 @@
     <title>Read Hyundai Marketing Planner</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto; background: #f5f7fa; color: #333; }
-        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+        body { font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto; background: #f0f4f8; color: #1f2937; }
+        .container { max-width: 1800px; margin: 0 auto; padding: 20px; }
         
-        header { display: flex; justify-content: space-between; align-items: center; background: linear-gradient(135deg, #003da5 0%, #001f4d 100%); color: white; padding: 25px; border-radius: 12px; margin-bottom: 30px; gap: 20px; flex-wrap: wrap; }
-        header h1 { font-size: 28px; font-weight: 700; }
-        header img { height: 45px; }
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 25px; background: linear-gradient(135deg, #003da5 0%, #001f4d 100%); border-radius: 12px; color: white; margin-bottom: 30px; flex-wrap: wrap; gap: 20px; }
+        .header img { height: 40px; }
+        .header h1 { font-size: 28px; font-weight: 700; flex: 1; }
         
-        .header-right { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
         .location-buttons { display: flex; gap: 8px; flex-wrap: wrap; }
-        .loc-btn { padding: 10px 16px; border: 2px solid white; background: transparent; color: white; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.2s; }
+        .loc-btn { padding: 10px 16px; border: 2px solid white; background: transparent; color: white; border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.2s; font-size: 13px; }
         .loc-btn.active { background: white; color: #003da5; }
         .loc-btn:hover { background: rgba(255,255,255,0.2); }
         
         .metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 25px; }
-        .metric-box { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border-left: 5px solid #003da5; }
-        .metric-label { font-size: 12px; color: #666; text-transform: uppercase; margin-bottom: 8px; font-weight: 700; }
+        .metric { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border-top: 4px solid #003da5; }
+        .metric-label { font-size: 11px; color: #6b7280; text-transform: uppercase; margin-bottom: 8px; font-weight: 700; }
         .metric-value { font-size: 28px; font-weight: 700; color: #003da5; }
         
-        .dashboard-section { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 25px; }
-        .section-title { font-size: 18px; font-weight: 700; margin-bottom: 20px; color: #003da5; }
+        .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 25px; }
+        .card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .card h3 { font-size: 16px; font-weight: 700; margin-bottom: 15px; color: #003da5; }
         
-        .breakdown-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; }
-        .breakdown-item { padding: 15px; background: #f9fafb; border-radius: 8px; border-left: 4px solid #003da5; }
-        .breakdown-item-name { font-weight: 600; margin-bottom: 8px; }
-        .breakdown-item-value { font-size: 20px; font-weight: 700; color: #003da5; }
+        .breakdown-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f0f0f0; }
+        .breakdown-item:last-child { border-bottom: none; }
+        .item-name { font-weight: 500; font-size: 14px; }
+        .item-value { font-weight: 700; color: #003da5; font-size: 14px; }
         
-        .location-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
-        .location-card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border-top: 4px solid #003da5; cursor: pointer; transition: all 0.2s; }
-        .location-card:hover { transform: translateY(-5px); box-shadow: 0 4px 15px rgba(0,0,0,0.15); }
-        .card-title { font-size: 18px; font-weight: 700; margin-bottom: 15px; color: #003da5; }
-        .card-stat { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; font-size: 14px; }
-        .card-stat-label { color: #666; }
-        .card-stat-value { font-weight: 700; }
+        .planner-header { display: flex; gap: 20px; margin-bottom: 20px; flex-wrap: wrap; }
+        .search-box { flex: 1; min-width: 250px; }
+        .search-box input { width: 100%; padding: 10px 12px; border: 1px solid #e5e7eb; border-radius: 6px; font-size: 14px; }
         
-        @media (max-width: 768px) {
-            header { flex-direction: column; align-items: flex-start; }
-            .header-right { width: 100%; }
+        .summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 20px; }
+        .summary-card { background: white; padding: 15px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border-left: 3px solid #003da5; }
+        .summary-card label { font-size: 11px; color: #6b7280; font-weight: 600; display: block; margin-bottom: 6px; }
+        .summary-card .value { font-size: 18px; font-weight: 700; color: #003da5; }
+        
+        .table-wrapper { background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1); overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; }
+        thead { background: #f9fafb; border-bottom: 2px solid #e5e7eb; }
+        th { padding: 12px; text-align: center; font-size: 12px; font-weight: 700; text-transform: uppercase; }
+        th:first-child { text-align: left; }
+        td { padding: 12px; border-bottom: 1px solid #f0f0f0; text-align: center; font-size: 13px; }
+        td:first-child { text-align: left; cursor: pointer; color: #003da5; font-weight: 600; }
+        td:first-child:hover { text-decoration: underline; }
+        tbody tr:hover { background: #f9fafb; }
+        
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); }
+        .modal.active { display: flex; justify-content: center; align-items: center; }
+        .modal-content { background: white; padding: 30px; border-radius: 12px; width: 90%; max-width: 500px; max-height: 80vh; overflow-y: auto; }
+        .modal-close { float: right; font-size: 28px; cursor: pointer; color: #999; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 13px; }
+        .form-group input { width: 100%; padding: 8px 10px; border: 1px solid #e5e7eb; border-radius: 6px; font-size: 13px; }
+        .month-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 15px; }
+        .month-item { background: #f9fafb; padding: 10px; border-radius: 6px; }
+        .month-item label { font-size: 10px; margin-bottom: 3px; }
+        .month-item input { padding: 6px; font-size: 12px; width: 100%; }
+        .modal-buttons { display: flex; gap: 10px; margin-top: 20px; }
+        .btn { padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; transition: 0.2s; flex: 1; }
+        .btn-primary { background: #003da5; color: white; }
+        .btn-primary:hover { background: #001f4d; }
+        .btn-secondary { background: #e5e7eb; color: #1f2937; }
+        .btn-secondary:hover { background: #d1d5db; }
+        
+        @media (max-width: 1024px) {
+            .dashboard-grid { grid-template-columns: 1fr; }
             .metrics { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 768px) {
+            .header { flex-direction: column; align-items: flex-start; }
+            .location-buttons { width: 100%; }
+            .metrics { grid-template-columns: 1fr; }
+            .summary { grid-template-columns: repeat(2, 1fr); }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <header>
+        <header class="header">
             <div style="display: flex; align-items: center; gap: 15px;">
                 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAAAWCAQAAADQ4mmBAAAAAmJLR0QA/4ePzL8AAAAHdElNRQfqBRIFLx/QJHVTAAATj0lEQVRo3u1aZ1iU17Z+v+kFBmHoXRBQRBRsib1rbEfsJtZjNDEm5kSPRpNjmiaaGGNyotEUjTHRaFAEewFrEuwoRRQLzDDMDDBM7+Xb94eKM8wo4/117/O45te8q7xrr71m7/3tb4Hn8lyey3P5/yIUUAhNZFwaGwBgdbLlN+Wptl4tzGz4OzkwjiKPEXKbUnb1EfAkdGFx6WbdsTKOa5WX9m0wuS91DuE/iEkbLPV/NX5op/xONx8QRnRmcRrkI6u64aqHbivA6ZDJDjBIk+8neHmeg5qflN6moz6BZ7Tf01zdLu9O5rvpt8HJTM/gB4MAAMHjnOjbUHb3iFWAKk7vtNBMWyLLyb5bXbrvfrzrPS/GodAyV2ZEB1MEoOEyKmXHGyPoj55hcgbiFAqEiR2C2lvincwghU2qqbouEzqnu9nsAcWJ7swXAIAdtEYunaTrT876jKfHQV5cRky6NY5tZVXV3tgja08v8rJqRHFiaHxNOV+d04xdBomiUkg51D3cLBdCzljQMURMEcBJGOpa2XhdX3L+kVqGkul6s9Git+pteouprn5PZZYCv3iQESi/MNsNVv2jj00/W+8j9UUguLfc5FDdPNX2vA/9aqyNlpabbXqr3qqzGfT66vq82xMKhFfhn9zCrfY6icWhOLozcH8LXRVKumtlZodiFWmhWQBQV7urck1ak1VjNJhMdkOlZPFvbQrdbIpwjK88qXfqrXqrwWo2myyPRqqbrXOzy0MFzqXVbjeqjHatUW8023R1kjXHIkuQ34J1Avrxbx0z2x9EMRq0N+XLbgbe97ut8vEzp2xCU6FJZ7ZojWqjyWA2a6Ulo6QeVtdQEq4pMdkeZGvUqC6Xv7qTe9Ir2rsgKO5S/7tBa7JpjXqT2aa/V/3evpBKL0uCWx9oTJeGl7lhZphnm3XmYWYPy48xlyMpeNQXRrX6QvWsAt5pAAAL4IHH5PBr8xrPMhlitqhr0Ghe2rXJaVWedHwOYVduoqso5kPgiq9iDMX+8IETXBZhu+jhaVtG4XALPQtsiid01d3aTDtYiBBwsgX9AkeJf9OsaGgI96PYPIDB41tZol6ZPcRFnoNMQe0kKoYJPtvTZznW4J9D233PjFD9Yfyjtj6IE5odOjd8Xb/0y4tP6Ic9tKqG08n7gXeUIqDpmIxFjpu3f6VAgXiMNB05uJ2RtZWVZcqX5yprhIhLC5wbsSwoRbawX70nLxMM8HmU+e7XNi0XYeLAkeJPSZsxH6xxrvBjpHloFI5YHrLYpdJtNp2WNplICofbTjCAY2K1qAhF8QXa+jub2LYAhMYIc9r+l0eSt66E+34xHmtR2if9J3aCZm/TXnldEDO0s3hu5CfdOt1YeFo9sAU3l83lc5hcz7ozwQfT044FJsXn0bbKDXQTg4oMFk2K3MIIjv96LyYCgAqVsyzk9ptWAIWYzKp9z0qkSwne9ehi3dd6e0H/408tRhBUqJhs1Jd9oJc2ndghOORlsRbrYxpqzGfP8IsBELzJOttZtcvhbPhlZ8AhtC7VqEm3qSpvNjUofgBjh5vmLE7GaysqSvVO7eeeK9YNXEjQlJj0JfNncDYBmAkZDreVH7O5lIsJCrw4duK3TI3OsAvUGS/dAewKUZ6w2eTLtvCPAuDChqIQ1WY7Xfvdf9ieI5iMAXzJWavkdkwluoDgeIL6qk5xon0RWpetAKN6ucWuOnw6A9T7D9Fr2MIqYHn+WCtQGWG9I70wNWA23gLB5Z5Ghbp4d9BeD6tLKIpuumg13lr4ATcXQAoIiqIVuTZa8jEYX3rYElSvMtPXR7qvLDToubSdfon2sPwU87kNJ/TyY4lH0AsElzoYK4x3ryZeB8B4ZPTgTDEEHzqbjhB9aAowx2u41GNzn7IBazhhk13S6h9NJwUvdM/q9ERLBigAFDY6o27UvKE5GPhy9thhWO9HyQEwcNt0NGDkn6lpzdBQ9EPiCCq0fh/l8jRehExEzRZ0UX87fOtg+0IAO9AOidW3l1gkgQuvt2vnY5RUM5GnBGAMuo1tM0STm78xwvISABu44KtLP9JfDJs6p6uvM+eDeNeRg2ES53FuaFR8ih9DHISyrPB3zGWlb7LKQT59iGbjdec/nKN8cjDBwLdYibUl+lJe2w7iZDftOnRH2pSAHg3bvvk+0zYJwB1QiJPXLXOUh8wv7jiw9YSeKhQo/I2V6F6pLWAmsTJDfdQOBCAARQOcZybog5czBP2NB8YotPvADc6Jx+ZWfVIRrq1ZT8whLy/nET84AFAsm2YnIyh2TA+89hCagc2BwVMdF/UlLZfrETgkFuXYZPd/KXDNfohZsQ4DKnQ72ElthqVjid/j+xFfcMXjiVG3ebT58cF2PQbWK7cimJ8T2ZyPt2QAYBACGq5WedYiEWFTmaGNXw2s/tczzgGhQAiccLphnXE4UDTe0Xh/2zznxGb0ILpWa37hREaMzPaxiDy7rIYDTjmhqGA2vBrrPD5hRoxGQP0N4CfvpPG0qX8HKRBPBLNpfznuFduvCceei+vsR0LnUVJivcbPHhHdyQ9rAABz1yXrtcApu8XDHwJ90bcHN8uyizKgxSNmHKJSeSnWv+bfd99CtqMKuhMui7A3xQjxu3TJGBDJ62IvLS+94YbuwynIz9gV3N4bA7v48CIAumIVquJ4wxw1mtt1fvDkhvAG2+9ITxXBv8eaBzMzC6uwuLsoy3CzSHXRTRuFmERWR1vx8Zvu0ZbgBuSnXXrRizPZGX7X4MnyBdhgJsDlVJkBNJ8EuSJnRKE4MmLzOMEs277a3EZ81sKRoiLFPcJdLICCjVY2wdHWQz8WRVHdxtn+/rMsEjkaSUHEp7GDk7YPxOlWErqMDaamcvYLoZFcfx+ZqLVaye6w9dl9Q/IBYB3aMuqm0YqaUyyv3oxGQzxDgGu3nJ4dJwOjJknBSv5OCIO/pQsDHcEM1Z8cb1jggd+DU9H9Hj/2xUDiFYtihkYomBtD7nSOmM9IMv+rv2RHqzxxoCPY8ZZzqxuHAAByABY4oCgADqK1gvZ84iZgcpZGEtoeeu/F9LeIRfPpUn0XN30g9IlUG0fZZ/aVHn61YEppKSdxbIBL428NfAkBje1YzhzZMynHelt2Q4nmxmIgagk1r0cQR2jQN65RbW2jkns581hdNrmsAEAo0kRPxR13/QK8CPlAdpLiywVWCtdhPRy6OGjS5j2vW1prrK+xATqTkCMK8H/zpajLh0MXi6euPvyzYw4G4UJKwHDTrj4NR7y2dg74IgKDVtACLwHD0tEs5Hdl+bkBAwiEKYDJCpAAno/MwdhsmS13ZNQEo0XZCM2KCcoXMFxB4OuK78+oPh6LWa3yhIMIGHyt7qzzFQDAN8BgfPggoFlT8TbutbjKcYV1Ci+0cxFEM/UFDWs6XN8B9zVVBC6HohSmCKz2cLPAYnZqEcvi43/dWISwhBlTQlSN0dc7CIeAaFaMkc1Ec2MRqK7YL3EF3MHcZLs1u2kPpniFcKCuiFUDBgDKbmzUeWq74kv+/FcctZKTCgBXUHxrbaFgdM8ugcX+pMcGYIf/F6WguknrDwhnzcxgl8xENu6PYwga83xtMjTs8HGUBBsMUKBhAt0q2SNhgecEbWehxZFACgflYlA009VyBBTlNCoLGDphFGdsgEAnGeQK9meymuMzWuBBaWKGSuhVJ0qvUu8V2NnpgiHMwLvKIjK4RQ1cID5qwAATFGg4PE5kzyiEIxK/R7nCmLTBer5p0w9nXsSvcGss48GEjWr8mdZnT/DS0kJBhVfucDpu/sg/O+wJ8fvC3EXQR/PzCPm3rP/CjJ8cVfsDpoTnxBa/gw1Pzex9UJQqjFhN2mcYHlUO+760f4aPjymZgH3iQRMtxcdudPdhaIVdTYETLgTT49jcAxRfILAqrtiZ/nJCCpc1gHbEAr09NngxZvKdMVx1vMarSSmitq611cVRd+fGfhf29rwFua5JrfIoQcyRluCg4ayBTgBYBBThPHCXOroteISPYjDMkg8+6mhs5C1ZFfHv1Jkpn8/Dj256LfQWMR0tBKbhdzc8GJSAFexSE5N30z39PO3ObVFJZwbVGRgKbaO8r/3Rk73HdcNKjL2t3ERFB01LxkZfQZ64pixBKkIncEWifoa82fvn7J+z33ggYiGDBIw+EjMCT5feOBjCznIoGutkfk4wAJzFX9ds5wLHn4rqhA792R00e5ZZfbWIEhapy8juMpLteZkRBnY7RrTr3jKzzW9OBRrqXY3cjF/btPfAM5EVyUm0yC4YbvqsGgd7yOk/DOf5Oe90TvaDpxrVDbY6dvqysAcvUPKR78w3Z5rLzUyX7ymgwEQ15lkbNjqrwqYdiPRs3iZYpbSOmbWBO84DF0OYRCXYqjeYqj1wFyjwwPWI3yQglMvn6k4cssrS0g7XB9VMsUc3ox6tuhUnUHPYerPNpOPxHfwuNwCMRmFCwFhbLUNNBVJCSkgJqQCW03aLl5o4eCgGP8XzQwxF6mBuJ8uZkcqLfvMBezHXatrJbhs7LIkZOtUlrS+84NPuDmru26r4vZanur//3IJkRAxn8DQXCSnxm/M2DistN3gZWV0GuKFfIQvhA1hRxktvmPc8wXMtXtXrdjDFcROzsKZVntOYoTae4aTEDhqEx6tw6weFA+gm0e/jZaYNHwq+Gy5DjcRewe8+qEO2G7oAnSEezgwwFxc7j3rEodQMih0R1fx9GQBLooOSOBRPYPbOrcUaeAQj5dq9nNR2owbhTb8LPhoD0HYYJ0G68q3hZ1569PllRNV8Ygif8Dl3/hM9J+MjVGXErHBp1FuVro/9ZgSAK7h71n5XPPGvFwSDTPl9Fft8WikwscmUz42Kn/8Fe9NDbAZG4Fpm8Ms2SUPhJeT6zbgI39i0eRQvYkFRwKlmtBdOxoldIxrbfjmOPMGzBH9CcsJeETzhXELr15FbUUesO2hV2OLjSVua0da3pvdRito8py5s2m9C91GVYJrBmMcIi5x/jPP4LeICXEkLm2lXyk5cxTk3awlsZbQjqN8M1q8PkRE42iboBVqpr1b7XasWjfUNSqDIczWETtvbxnsLI0846E7HDwHBk11VDcdfdY22PfrEOIuvWk8H9B2T4X0jTYPgD2Qx3wi9OyMml0qVftbpYp7fST+QwxhYb9zL7RPzCdOlybuLL31avYUKKHdYrkfOWze/nvcbgHXYAWlqwnpWgmZzn6qjz8R5DOUH9IVBE3qt1AXKAWSCwBCZtVrQTf9r3pUbT/HchkEKfS47NX50T0xvledvpJVovxJmZm1pygL14OadQuvNVYTvSy3HBP279Ha/QVyNG6jZY7rYZs6YRfX8iwCmgkCXmLKGn6z/oXfF3x4xinGxRH85YPznY2ZQ2wFsw6/c5AW8nobjmySlfleK1RK4jO03844ET88cEJE/zuONPYudMomddedBKzKMFVnHtpPZAPjoBl1Pbi/DV/2Vm9zs16LQVpcXP048LvLqOixtxgkhcdFvCRxJor5pwkx2iqO67vXf93xPv/pMUwx8gZdhzxe9HjVIXXCgLOmJdkewVHL13ZQtkesX9TblSSQWYUO3rH+y0lTbKjdL8NEzcf4HV9T3Fgt+il8s7qTbLbvlYN/P7jZD0M1QULt2orPdUzx/xhKY84LfEM3Y//tU9W+t8EzCfvrUxv6BIe/0PKTYazw3uxZ0k3hGqiibuOinbIoafGZv+l00MXLa0lP7nBPcarVTXvHvuJ8iPx3VU73v/n0nT9YtcxY3o2HPzW/+ont7xNiAi01lHwu2RfygfFFXKFObo0dMDJpsLK9e/7Yz0+9KsQACYkEDMT0AXkOdU7WrzRDRiFmHhjrzmw2JnqdKndT8i2Ebd+NY7MNiJ0PenyFX77d4bJ8XcAHOU1EX+C8cCu74+J7EhXpBUtslgJ1yahyVuk01R/pK3yf+thVxoh4aEALgNC5UflvAzdHsXmEb9EBtg6LlhecySLHx5KUpsUuDhgkmMKw0i2I679QtvbAtTN/PN4kD9dD6Wh+u4iAGl1e/EvUv3viIIQwLYRCOU1a3RvZNZEN77zgETRCQh8v8cZy8vbVAPLJDdlAhWpUc5JqOfPLCleh5oldEr7FsIEFcEFdd0y6ZssXfN2g0QgNCAViFLDj+jDglyF6QJHC7bNuFdLz/Z/GU5MWiEZH/YFjBpFmOauWKsh9TNWktmC8hF5NPXpseu1z0mugths3Fo02W3bVf9Lw53DtNAjUafL2looB6NIqSIiUNCQ8vEYtBOJlxdudxmcs1vdlfGxYU/PiQRmDUi+pPk4EADqKKmhvN5FyodTk9t8910DDejhZyS2SUrQ8A4HOwWa/EhbMBJyqIXHdR+649HEY/mwqoBrhRsVJzqrIvOY9ROASpOCSkVMa29ABwFkZhv2iXJkjl/Zv+G2W87HYB6W15OtKo0JSuaBxAVvvk2AXCHRnHMgUqH4zPWw7DwoprK+oYJ3JC2aisyJWl+fjD3GQ0MLbHRLAktbQz/WHV7onjQ5WNcWp/b+wI9vKTknlp8UI2pE6jrO7eOWW06x03i3JQrKTYRnqFjEdvBTAHP1M1UeEB1xQRhpavu09DzumUxMmIF5hQV68qW6VMp32/zU1ADfYK23dokxLGlthUlbW3Au3eL7/XoIb6JIbPKa6lHS/5PYfP5bk8l+fyf03+B2eOfk3P+CVMAAAAHnRFWHRpY2M6Y29weXJpZ2h0AEdvb2dsZSBJbmMuIDIwMTasCzM4AAAAFHRFWHRpY2M6ZGVzY3JpcHRpb24Ac1JHQrqQcwcAAAAASUVORK5CYII=" alt="Read Motor Group">
-                <h1>Read Hyundai Marketing Planner</h1>
+                <h1>Marketing Planner</h1>
             </div>
-            <div class="header-right">
-                <div class="location-buttons" id="locButtons"></div>
-            </div>
+            <div class="location-buttons" id="locButtons"></div>
         </header>
 
-        <!-- Top Metrics -->
-        <div class="metrics" id="topMetrics"></div>
+        <div class="metrics" id="metrics"></div>
 
-        <!-- Type Breakdown -->
-        <div class="dashboard-section">
-            <div class="section-title">📊 Spend by Campaign Type</div>
-            <div class="breakdown-list" id="typeBreakdown"></div>
+        <div id="dashboardView" class="view" style="display: none;">
+            <div class="dashboard-grid">
+                <div class="card">
+                    <h3>📊 Spend by Type</h3>
+                    <div id="typeBreakdown"></div>
+                </div>
+                <div class="card">
+                    <h3>📂 Spend by Category</h3>
+                    <div id="categoryBreakdown"></div>
+                </div>
+            </div>
         </div>
 
-        <!-- Category Breakdown -->
-        <div class="dashboard-section">
-            <div class="section-title">📂 Spend by Category</div>
-            <div class="breakdown-list" id="categoryBreakdown"></div>
-        </div>
+        <div id="plannerView">
+            <div class="planner-header">
+                <div class="search-box">
+                    <input type="text" id="search" placeholder="🔍 Search campaigns..." onkeyup="renderTable()">
+                </div>
+            </div>
 
-        <!-- Location Cards -->
-        <div class="dashboard-section">
-            <div class="section-title">📍 Location Summary</div>
-            <div class="location-cards" id="locationCards"></div>
+            <div class="summary">
+                <div class="summary-card"><label>Total Annual</label><div class="value" id="totalSpend">£0</div></div>
+                <div class="summary-card"><label>Q1</label><div class="value" id="q1">£0</div></div>
+                <div class="summary-card"><label>Q2</label><div class="value" id="q2">£0</div></div>
+                <div class="summary-card"><label>Q3</label><div class="value" id="q3">£0</div></div>
+                <div class="summary-card"><label>Q4</label><div class="value" id="q4">£0</div></div>
+                <div class="summary-card"><label>Target Units</label><div class="value" id="targetUnits">0</div></div>
+                <div class="summary-card"><label>Per Unit</label><div class="value" id="spendPerUnit">£0</div></div>
+            </div>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Campaign</th>
+                            <th>Category</th>
+                            <th>Q1</th>
+                            <th>Q2</th>
+                            <th>Q3</th>
+                            <th>Q4</th>
+                            <th>Annual</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal()">&times;</span>
+            <h2 style="margin-bottom: 20px;">Edit Campaign</h2>
+            <div class="form-group">
+                <label>Campaign Name</label>
+                <input type="text" id="editName" readonly>
+            </div>
+            <div class="form-group">
+                <label>Category</label>
+                <input type="text" id="editCategory" readonly>
+            </div>
+            <div class="form-group">
+                <label>Monthly Spend (£)</label>
+                <div class="month-grid" id="monthInputs"></div>
+            </div>
+            <div class="modal-buttons">
+                <button class="btn btn-primary" onclick="saveCampaign()">Save</button>
+                <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+            </div>
         </div>
     </div>
 
     <script>
         const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyhMqpQ_6BfigozBGe6FHhP_mPI5QzS_ugC6R8PqTNP-Mk445JchXV41a8O9x2Gv9rb/exec';
+        let allData = {};
+        let currentLocation = 'Lincoln';
+        let currentIndex = null;
         const formatter = new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' });
-        let allLocations = [];
 
         async function init() {
-            try {
-                // Get dashboard summary
-                const res = await fetch(`${APPS_SCRIPT_URL}?action=getDashboardSummary`);
-                const data = await res.json();
-                
-                allLocations = data.locations;
-                
-                // Render location buttons
-                let btnHtml = '';
-                data.locations.forEach(loc => {
-                    btnHtml += `<button class="loc-btn" onclick="alert('Location: ${loc.name}\\n\\nThis is a dashboard view. Planner coming soon!')">${loc.name}</button>`;
-                });
-                document.getElementById('locButtons').innerHTML = btnHtml;
-                
-                // Top metrics
-                const avgSpend = data.totalUnits > 0 ? data.totalSpend / data.totalUnits : 0;
-                const metricsHtml = `
-                    <div class="metric-box">
-                        <div class="metric-label">Total Spend</div>
-                        <div class="metric-value">${formatter.format(data.totalSpend)}</div>
-                    </div>
-                    <div class="metric-box">
-                        <div class="metric-label">Target Units</div>
-                        <div class="metric-value">${data.totalUnits.toLocaleString()}</div>
-                    </div>
-                    <div class="metric-box">
-                        <div class="metric-label">Spend Per Unit</div>
-                        <div class="metric-value">${formatter.format(avgSpend)}</div>
-                    </div>
-                    <div class="metric-box">
-                        <div class="metric-label">Locations</div>
-                        <div class="metric-value">${data.locations.length}</div>
-                    </div>
-                `;
-                document.getElementById('topMetrics').innerHTML = metricsHtml;
-                
-                // Type breakdown
-                let typeHtml = '';
-                Object.entries(data.byType).sort((a, b) => b[1] - a[1]).forEach(([type, spend]) => {
-                    typeHtml += `<div class="breakdown-item">
-                        <div class="breakdown-item-name">${type}</div>
-                        <div class="breakdown-item-value">${formatter.format(spend)}</div>
-                    </div>`;
-                });
-                document.getElementById('typeBreakdown').innerHTML = typeHtml;
-                
-                // Category breakdown
-                let catHtml = '';
-                Object.entries(data.byCategory).sort((a, b) => b[1] - a[1]).forEach(([cat, spend]) => {
-                    catHtml += `<div class="breakdown-item">
-                        <div class="breakdown-item-name">${cat}</div>
-                        <div class="breakdown-item-value">${formatter.format(spend)}</div>
-                    </div>`;
-                });
-                document.getElementById('categoryBreakdown').innerHTML = catHtml;
-                
-                // Location cards
-                let locHtml = '';
-                data.locations.forEach(loc => {
-                    locHtml += `<div class="location-card">
-                        <div class="card-title">${loc.name}</div>
-                        <div class="card-stat">
-                            <span class="card-stat-label">Annual Spend:</span>
-                            <span class="card-stat-value">${formatter.format(loc.spend)}</span>
-                        </div>
-                        <div class="card-stat">
-                            <span class="card-stat-label">Target Units:</span>
-                            <span class="card-stat-value">${loc.units}</span>
-                        </div>
-                        <div class="card-stat">
-                            <span class="card-stat-label">Spend/Unit:</span>
-                            <span class="card-stat-value">${formatter.format(loc.spendPerUnit)}</span>
-                        </div>
-                    </div>`;
-                });
-                document.getElementById('locationCards').innerHTML = locHtml;
-                
-            } catch (e) {
-                console.error('Error:', e);
-                document.getElementById('topMetrics').innerHTML = '<p style="color: red;">Error loading dashboard</p>';
+            const res = await fetch(`${APPS_SCRIPT_URL}?action=getDashboardSummary`);
+            const summary = await res.json();
+            
+            allData = {};
+            summary.locations.forEach(loc => {
+                allData[loc.name] = { campaigns: [], ...loc };
+            });
+            
+            for (let loc of summary.locations) {
+                const res = await fetch(`${APPS_SCRIPT_URL}?action=getCampaigns&sheet=${encodeURIComponent(loc.name)}`);
+                allData[loc.name].campaigns = await res.json();
             }
+
+            renderLocationButtons(summary.locations);
+            updateMetrics(summary);
+            loadLocation('Lincoln');
+        }
+
+        function renderLocationButtons(locations) {
+            const html = locations.map(loc => 
+                `<button class="loc-btn ${loc.name === 'Lincoln' ? 'active' : ''}" onclick="loadLocation('${loc.name}')">${loc.name}</button>`
+            ).join('');
+            document.getElementById('locButtons').innerHTML = html;
+        }
+
+        function loadLocation(name) {
+            currentLocation = name;
+            document.querySelectorAll('.loc-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            updateHeader();
+            renderTable();
+        }
+
+        function updateMetrics(summary) {
+            const cards = `
+                <div class="metric"><div class="metric-label">Total Spend</div><div class="metric-value">${formatter.format(summary.totalSpend)}</div></div>
+                <div class="metric"><div class="metric-label">Target Units</div><div class="metric-value">${summary.totalUnits.toLocaleString()}</div></div>
+                <div class="metric"><div class="metric-label">Spend/Unit</div><div class="metric-value">${formatter.format(summary.totalSpend / Math.max(summary.totalUnits, 1))}</div></div>
+                <div class="metric"><div class="metric-label">Locations</div><div class="metric-value">${summary.locations.length}</div></div>
+            `;
+            document.getElementById('metrics').innerHTML = cards;
+        }
+
+        function updateHeader() {
+            const loc = allData[currentLocation];
+            if (!loc) return;
+            
+            let q1 = 0, q2 = 0, q3 = 0, q4 = 0, total = 0;
+            loc.campaigns.forEach(row => {
+                if (!row[0] || row[0].toString().toLowerCase().includes('total')) return;
+                q1 += (parseFloat(row[4]) || 0) + (parseFloat(row[5]) || 0) + (parseFloat(row[6]) || 0);
+                q2 += (parseFloat(row[7]) || 0) + (parseFloat(row[8]) || 0) + (parseFloat(row[9]) || 0);
+                q3 += (parseFloat(row[10]) || 0) + (parseFloat(row[11]) || 0) + (parseFloat(row[12]) || 0);
+                q4 += (parseFloat(row[13]) || 0) + (parseFloat(row[14]) || 0) + (parseFloat(row[15]) || 0);
+                total += parseFloat(row[15]) || 0;
+            });
+            
+            const spendPerUnit = loc.units > 0 ? total / loc.units : 0;
+            document.getElementById('totalSpend').textContent = formatter.format(total);
+            document.getElementById('q1').textContent = formatter.format(q1);
+            document.getElementById('q2').textContent = formatter.format(q2);
+            document.getElementById('q3').textContent = formatter.format(q3);
+            document.getElementById('q4').textContent = formatter.format(q4);
+            document.getElementById('targetUnits').textContent = loc.units;
+            document.getElementById('spendPerUnit').textContent = formatter.format(spendPerUnit);
+        }
+
+        function renderTable() {
+            const loc = allData[currentLocation];
+            const search = document.getElementById('search').value.toLowerCase();
+            let html = '';
+            
+            loc.campaigns.forEach((row, i) => {
+                const name = row[0];
+                if (!name || name.toString().toLowerCase().includes('total')) return;
+                if (search && !name.toString().toLowerCase().includes(search)) return;
+                
+                const q1 = (parseFloat(row[4]) || 0) + (parseFloat(row[5]) || 0) + (parseFloat(row[6]) || 0);
+                const q2 = (parseFloat(row[7]) || 0) + (parseFloat(row[8]) || 0) + (parseFloat(row[9]) || 0);
+                const q3 = (parseFloat(row[10]) || 0) + (parseFloat(row[11]) || 0) + (parseFloat(row[12]) || 0);
+                const q4 = (parseFloat(row[13]) || 0) + (parseFloat(row[14]) || 0) + (parseFloat(row[15]) || 0);
+                const annual = parseFloat(row[15]) || 0;
+                
+                html += `<tr onclick="editCampaign(${i})"><td>${name}</td><td>${row[1] || '-'}</td><td>${formatter.format(q1)}</td><td>${formatter.format(q2)}</td><td>${formatter.format(q3)}</td><td>${formatter.format(q4)}</td><td>${formatter.format(annual)}</td></tr>`;
+            });
+            
+            document.getElementById('tableBody').innerHTML = html || '<tr><td colspan="7" style="text-align: center; padding: 20px;">No campaigns</td></tr>';
+        }
+
+        function editCampaign(idx) {
+            const row = allData[currentLocation].campaigns[idx];
+            document.getElementById('editName').value = row[0] || '';
+            document.getElementById('editCategory').value = row[1] || '';
+            
+            let html = '';
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            for (let i = 0; i < 12; i++) {
+                html += `<div class="month-item"><label>${months[i]}</label><input type="number" id="m${i}" value="${(parseFloat(row[i + 4]) || 0).toFixed(2)}" step="0.01"></div>`;
+            }
+            document.getElementById('monthInputs').innerHTML = html;
+            currentIndex = idx;
+            document.getElementById('editModal').classList.add('active');
+        }
+
+        async function saveCampaign() {
+            const vals = [];
+            for (let i = 0; i < 12; i++) vals.push(parseFloat(document.getElementById(`m${i}`).value) || 0);
+            
+            await fetch(APPS_SCRIPT_URL, {
+                method: 'POST',
+                body: JSON.stringify({ action: 'updateSpend', sheet: currentLocation, campaignIndex: currentIndex, months: vals })
+            });
+            closeModal();
+            location.reload();
+        }
+
+        function closeModal() {
+            document.getElementById('editModal').classList.remove('active');
         }
 
         init();
