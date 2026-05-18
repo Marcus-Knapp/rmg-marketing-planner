@@ -99,8 +99,8 @@
         
         <section class="summary-section">
             <div class="summary-card"><h3>Total Annual Spend</h3><p class="summary-value" id="totalSpend">£0.00</p></div>
-            <div class="summary-card"><h3>Target Units</h3><p class="summary-value" id="targetUnits">0</p></div>
-            <div class="summary-card"><h3>Cost Per Unit</h3><p class="summary-value" id="costPerUnit">£0.00</p></div>
+            <div class="summary-card"><h3>Active Campaigns</h3><p class="summary-value" id="campaignCount">0</p></div>
+            <div class="summary-card"><h3>Average Spend</h3><p class="summary-value" id="avgSpend">£0.00</p></div>
             <div class="summary-card"><h3>Last Updated</h3><p class="summary-value" id="lastUpdate">--:--</p></div>
         </section>
         
@@ -155,10 +155,6 @@
             </div>
             <div class="form-row">
                 <div class="form-group">
-                    <label>Target Units (Annual) *</label>
-                    <input type="number" id="editTargetUnits" step="1" min="0">
-                </div>
-                <div class="form-group">
                     <label>Monthly Budget (£) *</label>
                     <input type="number" id="editMonthlyBudget" step="0.01" min="0">
                 </div>
@@ -197,10 +193,6 @@
                     <input type="text" id="campaignType" placeholder="e.g., Social Media, Digital, Events">
                 </div>
                 <div class="form-row">
-                    <div class="form-group">
-                        <label>Target Units (Annual) *</label>
-                        <input type="number" id="targetUnits" step="1" min="0" required>
-                    </div>
                     <div class="form-group">
                         <label>Monthly Budget (£) *</label>
                         <input type="number" id="monthlyBudget" step="0.01" min="0" required>
@@ -306,12 +298,12 @@
         function updateUI() {
             const formatter = new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' });
             const totalSpend = summary.totalSpend || 0;
-            const totalUnits = (campaigns[currentSheet] || []).reduce((sum, c) => sum + (c.targetUnits || 0), 0);
-            const costPerUnit = totalUnits > 0 ? totalSpend / totalUnits : 0;
+            const campaignCount = (campaigns[currentSheet] || []).length;
+            const avgSpend = campaignCount > 0 ? totalSpend / campaignCount : 0;
             
             document.getElementById('totalSpend').textContent = formatter.format(totalSpend);
-            document.getElementById('targetUnits').textContent = totalUnits.toLocaleString();
-            document.getElementById('costPerUnit').textContent = formatter.format(costPerUnit);
+            document.getElementById('campaignCount').textContent = campaignCount.toLocaleString();
+            document.getElementById('avgSpend').textContent = formatter.format(avgSpend);
             
             renderView();
         }
