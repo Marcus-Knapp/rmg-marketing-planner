@@ -154,7 +154,9 @@
                 const sheets = await response.json();
                 console.log('Sheets data:', sheets);
                 const select = document.getElementById('sheetSelect');
-                select.innerHTML = '';
+                select.innerHTML = '<option value="">Select Location...</option>';
+                
+                // sheets is an array of objects with "name" property
                 sheets.forEach(s => {
                     const opt = document.createElement('option');
                     opt.value = s.name;
@@ -318,12 +320,27 @@
         async function testAPI() {
             console.log('Testing API...');
             try {
-                console.log('Calling: ' + APPS_SCRIPT_URL + '?action=getSheets');
-                const res = await fetch(APPS_SCRIPT_URL + '?action=getSheets');
-                console.log('Status: ' + res.status);
-                const text = await res.text();
-                console.log('Response: ' + text);
-                alert('API Response:\n' + text);
+                // Test getSheets
+                console.log('Testing getSheets...');
+                const sheetsRes = await fetch(APPS_SCRIPT_URL + '?action=getSheets');
+                const sheetsData = await sheetsRes.json();
+                console.log('Sheets:', sheetsData);
+                
+                // Test getCampaigns for first sheet
+                if (sheetsData.length > 0) {
+                    const sheetName = sheetsData[0].name;
+                    console.log('Testing getCampaigns for: ' + sheetName);
+                    const campaignsRes = await fetch(`${APPS_SCRIPT_URL}?action=getCampaigns&sheet=${encodeURIComponent(sheetName)}`);
+                    const campaignsData = await campaignsRes.json();
+                    console.log('Campaigns response type:', typeof campaignsData);
+                    console.log('Campaigns length:', campaignsData.length);
+                    console.log('First campaign:', campaignsData[0]);
+                    console.log('First campaign row 0:', campaignsData[0][0]);
+                    console.log('First campaign row 1:', campaignsData[0][1]);
+                    console.log('First campaign row 2:', campaignsData[0][2]);
+                    
+                    alert('Sheets: ' + JSON.stringify(sheetsData) + '\n\nFirst campaign: ' + JSON.stringify(campaignsData[0]));
+                }
             } catch (e) {
                 console.error('API Error: ' + e);
                 alert('API Error: ' + e.message);
