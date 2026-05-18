@@ -246,21 +246,29 @@
 
         async function loadDashboard() {
             try {
+                console.log('Loading dashboard...');
                 const res = await fetch(`${APPS_SCRIPT_URL}?action=getDashboardSummary`);
+                console.log('Response status:', res.status);
                 const summary = await res.json();
                 console.log('Dashboard summary:', summary);
+                console.log('Total spend:', summary.totalSpend);
+                console.log('Total units:', summary.totalUnits);
+                console.log('Locations:', summary.locations);
 
                 const formatter = new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' });
                 const avgPerUnit = summary.totalUnits > 0 ? summary.totalSpend / summary.totalUnits : 0;
 
+                console.log('Updating elements...');
                 document.getElementById('totalSpendMetric').textContent = formatter.format(summary.totalSpend);
                 document.getElementById('totalUnitsMetric').textContent = summary.totalUnits.toLocaleString();
                 document.getElementById('avgPerUnitMetric').textContent = formatter.format(avgPerUnit);
                 document.getElementById('locationsMetric').textContent = summary.locations.length;
+                console.log('Top metrics updated');
 
-                // Type breakdown - byType already has names from API (not numbers)
+                // Type breakdown
                 let typeHtml = '';
                 const typeEntries = Object.entries(summary.byType).sort((a, b) => b[1] - a[1]);
+                console.log('Type entries:', typeEntries);
                 const maxTypeSpend = Math.max(...typeEntries.map(e => e[1]), 1);
                 typeEntries.forEach(([type, spend]) => {
                     const pct = (spend / maxTypeSpend) * 100;
@@ -277,6 +285,7 @@
                 // Category breakdown
                 let catHtml = '';
                 const catEntries = Object.entries(summary.byCategory).sort((a, b) => b[1] - a[1]);
+                console.log('Category entries:', catEntries);
                 const maxCatSpend = Math.max(...catEntries.map(e => e[1]), 1);
                 catEntries.forEach(([cat, spend]) => {
                     const pct = (spend / maxCatSpend) * 100;
@@ -312,7 +321,11 @@
                     `;
                 });
                 document.getElementById('locationCards').innerHTML = locHtml;
-            } catch (e) { console.error('Dashboard error:', e); }
+                console.log('Dashboard loaded successfully');
+            } catch (e) { 
+                console.error('Dashboard error:', e);
+                alert('Dashboard error: ' + e.message);
+            }
         }
 
         async function loadSheets() {
@@ -354,11 +367,16 @@
             let q1 = 0, q2 = 0, q3 = 0, q4 = 0, total = 0;
             list.forEach(row => {
                 if (!row[0] || row[0].toString().toLowerCase().includes('total')) return;
-                q1 += (parseFloat(row[3]) || 0) + (parseFloat(row[4]) || 0) + (parseFloat(row[5]) || 0);
-                q2 += (parseFloat(row[6]) || 0) + (parseFloat(row[7]) || 0) + (parseFloat(row[8]) || 0);
-                q3 += (parseFloat(row[9]) || 0) + (parseFloat(row[10]) || 0) + (parseFloat(row[11]) || 0);
-                q4 += (parseFloat(row[12]) || 0) + (parseFloat(row[13]) || 0) + (parseFloat(row[14]) || 0);
-                total += parseFloat(row[15]) || 0;
+                // Columns E-P are indices 4-15 (12 months)
+                // E-G = Q1 (indices 4,5,6)
+                // H-J = Q2 (indices 7,8,9)
+                // K-M = Q3 (indices 10,11,12)
+                // N-P = Q4 (indices 13,14,15)
+                q1 += (parseFloat(row[4]) || 0) + (parseFloat(row[5]) || 0) + (parseFloat(row[6]) || 0);
+                q2 += (parseFloat(row[7]) || 0) + (parseFloat(row[8]) || 0) + (parseFloat(row[9]) || 0);
+                q3 += (parseFloat(row[10]) || 0) + (parseFloat(row[11]) || 0) + (parseFloat(row[12]) || 0);
+                q4 += (parseFloat(row[13]) || 0) + (parseFloat(row[14]) || 0) + (parseFloat(row[15]) || 0);
+                total += parseFloat(row[15]) || 0; // Column P (index 15) is "Spend"
             });
             const targetUnits = summary.targetUnits || 0;
             const spendPerUnit = targetUnits > 0 ? total / targetUnits : 0;
@@ -381,11 +399,12 @@
                 if (!name || name.toString().toLowerCase().includes('total')) return;
                 if (search && !name.toString().toLowerCase().includes(search)) return;
                 
-                const q1 = (parseFloat(row[3]) || 0) + (parseFloat(row[4]) || 0) + (parseFloat(row[5]) || 0);
-                const q2 = (parseFloat(row[6]) || 0) + (parseFloat(row[7]) || 0) + (parseFloat(row[8]) || 0);
-                const q3 = (parseFloat(row[9]) || 0) + (parseFloat(row[10]) || 0) + (parseFloat(row[11]) || 0);
-                const q4 = (parseFloat(row[12]) || 0) + (parseFloat(row[13]) || 0) + (parseFloat(row[14]) || 0);
-                const annual = parseFloat(row[15]) || 0;
+                // Columns E-P are indices 4-15 (12 months)
+                const q1 = (parseFloat(row[4]) || 0) + (parseFloat(row[5]) || 0) + (parseFloat(row[6]) || 0);
+                const q2 = (parseFloat(row[7]) || 0) + (parseFloat(row[8]) || 0) + (parseFloat(row[9]) || 0);
+                const q3 = (parseFloat(row[10]) || 0) + (parseFloat(row[11]) || 0) + (parseFloat(row[12]) || 0);
+                const q4 = (parseFloat(row[13]) || 0) + (parseFloat(row[14]) || 0) + (parseFloat(row[15]) || 0);
+                const annual = parseFloat(row[15]) || 0; // Column P is "Spend"
                 html += `<tr><td onclick="editCampaign(${i})" style="cursor: pointer;">${name}</td><td>${row[1] || '-'}</td><td>${formatter.format(q1)}</td><td>${formatter.format(q2)}</td><td>${formatter.format(q3)}</td><td>${formatter.format(q4)}</td><td><strong>${formatter.format(annual)}</strong></td></tr>`;
             });
             if (!html) html = '<tr><td colspan="7" style="text-align: center; padding: 20px;">No campaigns</td></tr>';
@@ -400,10 +419,11 @@
             
             let monthInputs = '';
             const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            // Columns E-P are indices 4-15 (12 months)
             for (let i = 0; i < 12; i++) {
                 monthInputs += `<div class="month-item">
                     <label>${months[i]}</label>
-                    <input type="number" id="m${i}" value="${(parseFloat(row[i + 3]) || 0).toFixed(2)}" min="0" step="0.01">
+                    <input type="number" id="m${i}" value="${(parseFloat(row[i + 4]) || 0).toFixed(2)}" min="0" step="0.01">
                 </div>`;
             }
             document.getElementById('monthInputs').innerHTML = monthInputs;
