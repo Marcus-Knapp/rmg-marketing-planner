@@ -313,11 +313,11 @@
             let q1 = 0, q2 = 0, q3 = 0, q4 = 0, total = 0;
             list.forEach(row => {
                 if (!row[0] || row[0].toString().toLowerCase().includes('total')) return;
-                q1 += (parseFloat(row[2]) || 0) + (parseFloat(row[3]) || 0) + (parseFloat(row[4]) || 0);
-                q2 += (parseFloat(row[5]) || 0) + (parseFloat(row[6]) || 0) + (parseFloat(row[7]) || 0);
-                q3 += (parseFloat(row[8]) || 0) + (parseFloat(row[9]) || 0) + (parseFloat(row[10]) || 0);
-                q4 += (parseFloat(row[11]) || 0) + (parseFloat(row[12]) || 0) + (parseFloat(row[13]) || 0);
-                total += parseFloat(row[14]) || 0;
+                q1 += (parseFloat(row[3]) || 0) + (parseFloat(row[4]) || 0) + (parseFloat(row[5]) || 0);
+                q2 += (parseFloat(row[6]) || 0) + (parseFloat(row[7]) || 0) + (parseFloat(row[8]) || 0);
+                q3 += (parseFloat(row[9]) || 0) + (parseFloat(row[10]) || 0) + (parseFloat(row[11]) || 0);
+                q4 += (parseFloat(row[12]) || 0) + (parseFloat(row[13]) || 0) + (parseFloat(row[14]) || 0);
+                total += parseFloat(row[15]) || 0;
             });
             const targetUnits = summary.targetUnits || 0;
             const spendPerUnit = targetUnits > 0 ? total / targetUnits : 0;
@@ -339,11 +339,19 @@
                 const name = row[0];
                 if (!name || name.toString().toLowerCase().includes('total')) return;
                 if (search && !name.toString().toLowerCase().includes(search)) return;
-                const q1 = (parseFloat(row[2]) || 0) + (parseFloat(row[3]) || 0) + (parseFloat(row[4]) || 0);
-                const q2 = (parseFloat(row[5]) || 0) + (parseFloat(row[6]) || 0) + (parseFloat(row[7]) || 0);
-                const q3 = (parseFloat(row[8]) || 0) + (parseFloat(row[9]) || 0) + (parseFloat(row[10]) || 0);
-                const q4 = (parseFloat(row[11]) || 0) + (parseFloat(row[12]) || 0) + (parseFloat(row[13]) || 0);
-                const annual = parseFloat(row[14]) || 0;
+                
+                // New structure: A=name, B=category, C=type, D-O=12 months, P=annual
+                // D-F = Q1 (indices 3,4,5)
+                // G-I = Q2 (indices 6,7,8)
+                // J-L = Q3 (indices 9,10,11)
+                // M-O = Q4 (indices 12,13,14)
+                // P = annual (index 15)
+                
+                const q1 = (parseFloat(row[3]) || 0) + (parseFloat(row[4]) || 0) + (parseFloat(row[5]) || 0);
+                const q2 = (parseFloat(row[6]) || 0) + (parseFloat(row[7]) || 0) + (parseFloat(row[8]) || 0);
+                const q3 = (parseFloat(row[9]) || 0) + (parseFloat(row[10]) || 0) + (parseFloat(row[11]) || 0);
+                const q4 = (parseFloat(row[12]) || 0) + (parseFloat(row[13]) || 0) + (parseFloat(row[14]) || 0);
+                const annual = parseFloat(row[15]) || 0;
                 html += `<tr><td>${name}</td><td>${row[1] || '-'}</td><td>${formatter.format(q1)}</td><td>${formatter.format(q2)}</td><td>${formatter.format(q3)}</td><td>${formatter.format(q4)}</td><td><strong>${formatter.format(annual)}</strong></td></tr>`;
             });
             if (!html) html = '<tr><td colspan="7" style="text-align: center; padding: 20px;">No campaigns</td></tr>';
