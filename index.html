@@ -139,12 +139,19 @@
         const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
         let data = {}, currentSheet = null, currentIndex = null;
 
-        document.addEventListener('DOMContentLoaded', loadSheets);
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('Dashboard loaded');
+            loadSheets();
+            setInterval(syncData, 300000);
+        });
 
         async function loadSheets() {
+            console.log('Loading sheets...');
             try {
                 const response = await fetch(`${APPS_SCRIPT_URL}?action=getSheets`);
+                console.log('Sheets response status:', response.status);
                 const sheets = await response.json();
+                console.log('Sheets data:', sheets);
                 const select = document.getElementById('sheetSelect');
                 select.innerHTML = '';
                 sheets.forEach(s => {
@@ -153,26 +160,42 @@
                     opt.textContent = s.name;
                     select.appendChild(opt);
                 });
-            } catch (e) { console.error(e); }
+                console.log('Sheets loaded successfully');
+            } catch (e) { 
+                console.error('Error loading sheets:', e);
+            }
         }
 
         async function changeSheet(sheetName) {
             currentSheet = sheetName;
+            console.log('Changed sheet to:', sheetName);
+            if (!currentSheet) return;
             await syncData();
         }
 
         async function syncData() {
-            if (!currentSheet) return;
+            console.log('Syncing data for sheet:', currentSheet);
+            if (!currentSheet) {
+                console.log('No sheet selected');
+                return;
+            }
             try {
+                console.log('Fetching campaigns from:', `${APPS_SCRIPT_URL}?action=getCampaigns&sheet=${encodeURIComponent(currentSheet)}`);
                 const res = await fetch(`${APPS_SCRIPT_URL}?action=getCampaigns&sheet=${encodeURIComponent(currentSheet)}`);
+                console.log('Campaigns response status:', res.status);
                 data[currentSheet] = await res.json();
+                console.log('Campaigns data:', data[currentSheet]);
 
                 const summaryRes = await fetch(`${APPS_SCRIPT_URL}?action=getSummary&sheet=${encodeURIComponent(currentSheet)}`);
+                console.log('Summary response status:', summaryRes.status);
                 const summary = await summaryRes.json();
+                console.log('Summary data:', summary);
 
                 updateHeader(summary);
                 renderTable();
-            } catch (e) { console.error(e); }
+            } catch (e) { 
+                console.error('Error syncing data:', e);
+            }
         }
 
         function updateHeader(summary) {
