@@ -234,25 +234,32 @@
         }
 
         async function loadAllDataForDashboard() {
+            console.log('Loading dashboard data...');
             try {
                 const sheetsRes = await fetch(`${APPS_SCRIPT_URL}?action=getSheets`);
                 const sheets = await sheetsRes.json();
+                console.log('Sheets:', sheets);
                 
                 let totalSpend = 0, totalUnits = 0;
                 const locationData = [];
 
                 for (const sheet of sheets) {
+                    console.log('Processing sheet:', sheet.name);
                     const campaignsRes = await fetch(`${APPS_SCRIPT_URL}?action=getCampaigns&sheet=${encodeURIComponent(sheet.name)}`);
                     const campaigns = await campaignsRes.json();
+                    console.log('Campaigns for ' + sheet.name + ':', campaigns.length);
                     
                     const summaryRes = await fetch(`${APPS_SCRIPT_URL}?action=getSummary&sheet=${encodeURIComponent(sheet.name)}`);
                     const summary = await summaryRes.json();
+                    console.log('Summary for ' + sheet.name + ':', summary);
 
                     let locationSpend = 0;
                     campaigns.forEach(row => {
                         if (!row[0] || row[0].toString().toLowerCase().includes('total')) return;
                         locationSpend += parseFloat(row[14]) || 0;
                     });
+
+                    console.log('Location spend for ' + sheet.name + ':', locationSpend);
 
                     totalSpend += locationSpend;
                     totalUnits += summary.targetUnits || 0;
@@ -264,6 +271,10 @@
                         spendPerUnit: (summary.targetUnits > 0) ? locationSpend / summary.targetUnits : 0
                     });
                 }
+
+                console.log('Total spend:', totalSpend);
+                console.log('Total units:', totalUnits);
+                console.log('Location data:', locationData);
 
                 // Update dashboard cards
                 const formatter = new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' });
@@ -284,7 +295,10 @@
                     </div>`;
                 });
                 document.getElementById('locationCards').innerHTML = html;
-            } catch (e) { console.error(e); }
+                console.log('Dashboard loaded successfully');
+            } catch (e) { 
+                console.error('Dashboard error:', e);
+            }
         }
 
         function goToLocation(sheetName) {
