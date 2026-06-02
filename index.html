@@ -328,28 +328,38 @@
 
         function renderTable() {
             if (currentLoc === 'All Sites') {
-                // Show individual campaigns grouped by site
-                let html = '';
-                summary.locations.forEach(loc => {
-                    const camps = allCamps[loc.name] || [];
-                    if (camps.length === 0) return;
-                    
-                    // Site header row
-                    html += `<tr style="font-weight:700; background:#2d3748; color:white;"><td colspan="7">${loc.name}</td></tr>`;
-                    
-                    // Campaign rows for this site
-                    camps.forEach((r, i) => {
+                // Consolidate campaigns by name and sum across all sites
+                const campaignTotals = {};
+                
+                Object.keys(allCamps).forEach(site => {
+                    const camps = allCamps[site] || [];
+                    camps.forEach(r => {
                         const name = r[0];
                         if (!name || name.toString().toLowerCase().includes('total')) return;
-                        const q1 = (parseFloat(r[3])||0) + (parseFloat(r[4])||0) + (parseFloat(r[5])||0);
-                        const q2 = (parseFloat(r[6])||0) + (parseFloat(r[7])||0) + (parseFloat(r[8])||0);
-                        const q3 = (parseFloat(r[9])||0) + (parseFloat(r[10])||0) + (parseFloat(r[11])||0);
-                        const q4 = (parseFloat(r[12])||0) + (parseFloat(r[13])||0) + (parseFloat(r[14])||0);
-                        const ann = q1 + q2 + q3 + q4;
-                        html += `<tr style="padding-left:20px;"><td style="padding-left:20px;">${name}</td><td>${r[1]||'-'}</td><td>${fmt(q1)}</td><td>${fmt(q2)}</td><td>${fmt(q3)}</td><td>${fmt(q4)}</td><td>${fmt(ann)}</td></tr>`;
+                        
+                        if (!campaignTotals[name]) {
+                            campaignTotals[name] = {
+                                category: r[1] || '-',
+                                q1: 0, q2: 0, q3: 0, q4: 0
+                            };
+                        }
+                        
+                        campaignTotals[name].q1 += (parseFloat(r[3])||0) + (parseFloat(r[4])||0) + (parseFloat(r[5])||0);
+                        campaignTotals[name].q2 += (parseFloat(r[6])||0) + (parseFloat(r[7])||0) + (parseFloat(r[8])||0);
+                        campaignTotals[name].q3 += (parseFloat(r[9])||0) + (parseFloat(r[10])||0) + (parseFloat(r[11])||0);
+                        campaignTotals[name].q4 += (parseFloat(r[12])||0) + (parseFloat(r[13])||0) + (parseFloat(r[14])||0);
                     });
                 });
-                document.getElementById('tableBody').innerHTML = html || '<tr><td colspan="7" style="text-align:center; padding: 20px;">No data</td></tr>';
+                
+                // Sort by campaign name and render
+                const sorted = Object.keys(campaignTotals).sort();
+                let html = '';
+                sorted.forEach(name => {
+                    const data = campaignTotals[name];
+                    const ann = data.q1 + data.q2 + data.q3 + data.q4;
+                    html += `<tr><td>${name}</td><td>${data.category}</td><td>${fmt(data.q1)}</td><td>${fmt(data.q2)}</td><td>${fmt(data.q3)}</td><td>${fmt(data.q4)}</td><td>${fmt(ann)}</td></tr>`;
+                });
+                document.getElementById('tableBody').innerHTML = html || '<tr><td colspan="7" style="text-align:center; padding: 20px;">No campaigns</td></tr>';
             } else {
                 // Show individual campaigns for specific site (with edit capability)
                 const camps = allCamps[currentLoc] || [];
