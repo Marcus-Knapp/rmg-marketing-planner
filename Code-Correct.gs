@@ -36,9 +36,15 @@ function getCampaigns(sheetName) {
   const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
   const sheet = ss.getSheetByName(sheetName);
   const data = sheet.getRange(DATA_RANGE).getValues();
+  const backgrounds = sheet.getRange(DATA_RANGE).getBackgrounds();
   
   const campaigns = [];
   for (let i = 2; i < data.length; i++) {
+    // Skip rows with #808080 background color (sub-headers)
+    if (backgrounds[i][0] === '#808080') {
+      continue;
+    }
+    
     if (data[i][0] && !data[i][0].toString().toLowerCase().includes('total')) {
       campaigns.push(data[i]);
     }
