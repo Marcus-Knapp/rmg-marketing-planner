@@ -124,12 +124,9 @@ function updateSpend(sheetName, campaignIndex, months) {
   
   const rowIndex = campaignIndex + 2;
   
-  // Columns E-O (indices 4-14) are the months: Jan through Dec (11 months shown, but 12 values provided)
-  // Write the 12 month values to E-O
-  for (let i = 0; i < Math.min(12, months.length); i++) {
-    if (4 + i <= 14) {
-      data[rowIndex][4 + i] = months[i];
-    }
+  // Columns D-O (indices 3-14) are the 12 months: Jan through Dec
+  for (let i = 0; i < 12; i++) {
+    data[rowIndex][3 + i] = months[i];
   }
   
   // Column P (index 15) is auto-calculated Annual Total - don't touch it
