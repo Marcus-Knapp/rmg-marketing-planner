@@ -171,7 +171,7 @@
         const API = 'https://script.google.com/macros/s/AKfycbyhMqpQ_6BfigozBGe6FHhP_mPI5QzS_ugC6R8PqTNP-Mk445JchXV41a8O9x2Gv9rb/exec';
         const fmt = n => new Intl.NumberFormat('en-GB', {style:'currency',currency:'GBP'}).format(n);
         
-        let summary = {}, allCamps = {}, currentLoc = 'Lincoln', currentIdx = null;
+        let summary = {}, allCamps = {}, currentLoc = 'All Sites', currentIdx = null;
         let typeChart, categoryChart;
 
         async function init() {
@@ -193,14 +193,16 @@
                 renderLocButtons();
                 renderMetrics();
                 renderDashboard();
+                refreshPlanner();
             } catch (err) {
                 document.getElementById('loadingScreen').innerHTML = '⚠️ Error loading data. Check your connection.';
             }
         }
 
         function renderLocButtons() {
-            const html = summary.locations.map(l => 
-                `<button class="btn btn-loc ${l.name === 'Lincoln' ? 'active' : ''}" onclick="setLoc(event, '${l.name}')">${l.name}</button>`
+            const html = '<button class="btn btn-loc active" onclick="setLoc(event, \'All Sites\')">All Sites</button>' + 
+                summary.locations.map(l => 
+                `<button class="btn btn-loc" onclick="setLoc(event, '${l.name}')">${l.name}</button>`
             ).join('');
             document.getElementById('locButtons').innerHTML = html;
         }
@@ -277,32 +279,63 @@
         }
 
         function refreshPlanner() {
-            const camps = allCamps[currentLoc] || [];
             let q1=0, q2=0, q3=0, q4=0;
-            camps.forEach(r => {
-                if (!r[0]) return;
-                q1 += (parseFloat(r[3])||0) + (parseFloat(r[4])||0) + (parseFloat(r[5])||0);
-                q2 += (parseFloat(r[6])||0) + (parseFloat(r[7])||0) + (parseFloat(r[8])||0);
-                q3 += (parseFloat(r[9])||0) + (parseFloat(r[10])||0) + (parseFloat(r[11])||0);
-                q4 += (parseFloat(r[12])||0) + (parseFloat(r[13])||0) + (parseFloat(r[14])||0);
-            });
+            
+            if (currentLoc === 'All Sites') {
+                Object.values(allCamps).forEach(camps => {
+                    camps.forEach(r => {
+                        if (!r[0]) return;
+                        q1 += (parseFloat(r[3])||0) + (parseFloat(r[4])||0) + (parseFloat(r[5])||0);
+                        q2 += (parseFloat(r[6])||0) + (parseFloat(r[7])||0) + (parseFloat(r[8])||0);
+                        q3 += (parseFloat(r[9])||0) + (parseFloat(r[10])||0) + (parseFloat(r[11])||0);
+                        q4 += (parseFloat(r[12])||0) + (parseFloat(r[13])||0) + (parseFloat(r[14])||0);
+                    });
+                });
+            } else {
+                const camps = allCamps[currentLoc] || [];
+                camps.forEach(r => {
+                    if (!r[0]) return;
+                    q1 += (parseFloat(r[3])||0) + (parseFloat(r[4])||0) + (parseFloat(r[5])||0);
+                    q2 += (parseFloat(r[6])||0) + (parseFloat(r[7])||0) + (parseFloat(r[8])||0);
+                    q3 += (parseFloat(r[9])||0) + (parseFloat(r[10])||0) + (parseFloat(r[11])||0);
+                    q4 += (parseFloat(r[12])||0) + (parseFloat(r[13])||0) + (parseFloat(r[14])||0);
+                });
+            }
+            
             const tot = q1 + q2 + q3 + q4;
-            const loc = summary.locations.find(l => l.name === currentLoc);
-            const perUnit = loc.units > 0 ? tot / loc.units : 0;
+            let units = 0, perUnit = 0;
+            
+            if (currentLoc === 'All Sites') {
+                summary.locations.forEach(l => { units += l.units; });
+            } else {
+                const loc = summary.locations.find(l => l.name === currentLoc);
+                units = loc ? loc.units : 0;
+            }
+            
+            perUnit = units > 0 ? tot / units : 0;
+            
             document.getElementById('summary').innerHTML = `
+                <div class="summary-item"><div class="summary-label">Location</div><div class="summary-value">${currentLoc}</div></div>
                 <div class="summary-item"><div class="summary-label">Total Annual</div><div class="summary-value">${fmt(tot)}</div></div>
                 <div class="summary-item"><div class="summary-label">Q1</div><div class="summary-value">${fmt(q1)}</div></div>
                 <div class="summary-item"><div class="summary-label">Q2</div><div class="summary-value">${fmt(q2)}</div></div>
                 <div class="summary-item"><div class="summary-label">Q3</div><div class="summary-value">${fmt(q3)}</div></div>
                 <div class="summary-item"><div class="summary-label">Q4</div><div class="summary-value">${fmt(q4)}</div></div>
-                <div class="summary-item"><div class="summary-label">Units</div><div class="summary-value">${loc.units}</div></div>
+                <div class="summary-item"><div class="summary-label">Units</div><div class="summary-value">${units}</div></div>
                 <div class="summary-item"><div class="summary-label">/Unit</div><div class="summary-value">${fmt(perUnit)}</div></div>
             `;
             renderTable();
         }
 
         function renderTable() {
-            const camps = allCamps[currentLoc] || [];
+            let camps = [];
+            
+            if (currentLoc === 'All Sites') {
+                Object.values(allCamps).forEach(c => { camps = camps.concat(c); });
+            } else {
+                camps = allCamps[currentLoc] || [];
+            }
+            
             const s = document.getElementById('search').value.toLowerCase();
             let html = '';
             camps.forEach((r, i) => {
@@ -314,7 +347,7 @@
                 const q3 = (parseFloat(r[9])||0) + (parseFloat(r[10])||0) + (parseFloat(r[11])||0);
                 const q4 = (parseFloat(r[12])||0) + (parseFloat(r[13])||0) + (parseFloat(r[14])||0);
                 const ann = q1 + q2 + q3 + q4;
-                html += `<tr onclick="editCamp(${i})"><td>${name}</td><td>${r[1]||'-'}</td><td>${fmt(q1)}</td><td>${fmt(q2)}</td><td>${fmt(q3)}</td><td>${fmt(q4)}</td><td>${fmt(ann)}</td></tr>`;
+                html += `<tr><td>${name}</td><td>${r[1]||'-'}</td><td>${fmt(q1)}</td><td>${fmt(q2)}</td><td>${fmt(q3)}</td><td>${fmt(q4)}</td><td>${fmt(ann)}</td></tr>`;
             });
             document.getElementById('tableBody').innerHTML = html || '<tr><td colspan="7" style="text-align:center; padding: 20px;">No campaigns</td></tr>';
         }
