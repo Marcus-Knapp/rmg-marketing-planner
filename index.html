@@ -95,7 +95,7 @@
             <div class="controls">
                 <div class="btn-group">
                     <button class="btn btn-view active" onclick="showView('dashboard')">Dashboard</button>
-                    <button class="btn btn-view" onclick="showView('planner')">All Sites</button>
+                    <button class="btn btn-view" onclick="goToAllSites()">All Sites</button>
                 </div>
                 <div class="btn-group" id="locButtons"></div>
             </div>
@@ -275,6 +275,12 @@
             document.getElementById(v).classList.add('active');
             document.querySelectorAll('.btn-view').forEach(b => b.classList.remove('active'));
             event.target.classList.add('active');
+        }
+        
+        function goToAllSites() {
+            currentLoc = 'All Sites';
+            showView('planner');
+            refreshPlanner();
         }
 
         function refreshPlanner() {
