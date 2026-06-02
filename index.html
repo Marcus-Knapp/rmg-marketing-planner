@@ -375,16 +375,25 @@
         async function saveCampaign() {
             const vals = [];
             for (let i=0; i<12; i++) vals.push(parseFloat(document.getElementById(`m${i}`).value)||0);
+            console.log('Saving:', {sheet: currentLoc, index: currentIdx, months: vals});
             try {
                 const res = await fetch(API, {method:'POST', body:JSON.stringify({action:'updateSpend', sheet:currentLoc, campaignIndex:currentIdx, months:vals})});
+                console.log('Response status:', res.status);
                 const result = await res.json();
+                console.log('Result:', result);
                 if (result.success) {
+                    alert('✅ Saved!');
                     const c = await fetch(`${API}?action=getCampaigns&sheet=${encodeURIComponent(currentLoc)}`);
                     allCamps[currentLoc] = await c.json();
                     refreshPlanner();
                     closeModal();
-                } else alert('Error: ' + result.error);
-            } catch (err) { alert('Error: ' + err.message); }
+                } else {
+                    alert('❌ Error: ' + (result.error || 'Unknown error'));
+                }
+            } catch (err) { 
+                console.error('Error:', err);
+                alert('❌ Error: ' + err.message); 
+            }
         }
 
         function closeModal() { document.getElementById('editModal').classList.remove('active'); }
