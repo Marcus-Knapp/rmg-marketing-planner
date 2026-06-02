@@ -327,36 +327,44 @@
         }
 
         function renderTable() {
-            let camps = [];
-            let locationForCamp = {}; // Track which location each campaign belongs to
-            
             if (currentLoc === 'All Sites') {
-                Object.keys(allCamps).forEach(loc => {
-                    allCamps[loc].forEach((c, idx) => {
-                        camps.push(c);
-                        locationForCamp[camps.length - 1] = loc;
+                // Show site summaries instead of campaigns
+                let html = '';
+                summary.locations.forEach(loc => {
+                    const camps = allCamps[loc.name] || [];
+                    let q1=0, q2=0, q3=0, q4=0;
+                    camps.forEach(r => {
+                        if (!r[0]) return;
+                        q1 += (parseFloat(r[3])||0) + (parseFloat(r[4])||0) + (parseFloat(r[5])||0);
+                        q2 += (parseFloat(r[6])||0) + (parseFloat(r[7])||0) + (parseFloat(r[8])||0);
+                        q3 += (parseFloat(r[9])||0) + (parseFloat(r[10])||0) + (parseFloat(r[11])||0);
+                        q4 += (parseFloat(r[12])||0) + (parseFloat(r[13])||0) + (parseFloat(r[14])||0);
                     });
+                    const tot = q1 + q2 + q3 + q4;
+                    const perUnit = loc.units > 0 ? tot / loc.units : 0;
+                    html += `<tr style="font-weight:600; background:#f8f8f8; cursor:pointer;" onclick="setLoc(event, '${loc.name}')"><td>${loc.name}</td><td>-</td><td>${fmt(q1)}</td><td>${fmt(q2)}</td><td>${fmt(q3)}</td><td>${fmt(q4)}</td><td>${fmt(tot)}</td></tr>`;
                 });
+                document.getElementById('tableBody').innerHTML = html || '<tr><td colspan="7" style="text-align:center; padding: 20px;">No data</td></tr>';
             } else {
-                camps = allCamps[currentLoc] || [];
+                // Show individual campaigns for specific site
+                const camps = allCamps[currentLoc] || [];
+                const s = document.getElementById('search').value.toLowerCase();
+                let html = '';
+                camps.forEach((r, i) => {
+                    const name = r[0];
+                    if (!name || name.toString().toLowerCase().includes('total')) return;
+                    if (s && !name.toString().toLowerCase().includes(s)) return;
+                    const q1 = (parseFloat(r[3])||0) + (parseFloat(r[4])||0) + (parseFloat(r[5])||0);
+                    const q2 = (parseFloat(r[6])||0) + (parseFloat(r[7])||0) + (parseFloat(r[8])||0);
+                    const q3 = (parseFloat(r[9])||0) + (parseFloat(r[10])||0) + (parseFloat(r[11])||0);
+                    const q4 = (parseFloat(r[12])||0) + (parseFloat(r[13])||0) + (parseFloat(r[14])||0);
+                    const ann = q1 + q2 + q3 + q4;
+                    const clickable = currentLoc !== 'All Sites' ? `onclick="editCamp(${i})"` : '';
+                    const style = currentLoc !== 'All Sites' ? 'cursor:pointer' : '';
+                    html += `<tr ${clickable} style="${style}"><td>${name}</td><td>${r[1]||'-'}</td><td>${fmt(q1)}</td><td>${fmt(q2)}</td><td>${fmt(q3)}</td><td>${fmt(q4)}</td><td>${fmt(ann)}</td></tr>`;
+                });
+                document.getElementById('tableBody').innerHTML = html || '<tr><td colspan="7" style="text-align:center; padding: 20px;">No campaigns</td></tr>';
             }
-            
-            const s = document.getElementById('search').value.toLowerCase();
-            let html = '';
-            camps.forEach((r, i) => {
-                const name = r[0];
-                if (!name || name.toString().toLowerCase().includes('total')) return;
-                if (s && !name.toString().toLowerCase().includes(s)) return;
-                const q1 = (parseFloat(r[3])||0) + (parseFloat(r[4])||0) + (parseFloat(r[5])||0);
-                const q2 = (parseFloat(r[6])||0) + (parseFloat(r[7])||0) + (parseFloat(r[8])||0);
-                const q3 = (parseFloat(r[9])||0) + (parseFloat(r[10])||0) + (parseFloat(r[11])||0);
-                const q4 = (parseFloat(r[12])||0) + (parseFloat(r[13])||0) + (parseFloat(r[14])||0);
-                const ann = q1 + q2 + q3 + q4;
-                const clickable = currentLoc !== 'All Sites' ? `onclick="editCamp(${i})"` : '';
-                const style = currentLoc !== 'All Sites' ? 'cursor:pointer' : '';
-                html += `<tr ${clickable} style="${style}"><td>${name}</td><td>${r[1]||'-'}</td><td>${fmt(q1)}</td><td>${fmt(q2)}</td><td>${fmt(q3)}</td><td>${fmt(q4)}</td><td>${fmt(ann)}</td></tr>`;
-            });
-            document.getElementById('tableBody').innerHTML = html || '<tr><td colspan="7" style="text-align:center; padding: 20px;">No campaigns</td></tr>';
         }
 
         function editCamp(i) {
