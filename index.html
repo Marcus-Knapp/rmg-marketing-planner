@@ -361,6 +361,7 @@
         }
 
         function editCamp(i) {
+            alert('Opening campaign ' + i);
             const r = allCamps[currentLoc][i];
             document.getElementById('editName').value = r[0] || '';
             document.getElementById('editCategory').value = r[1] || '';
