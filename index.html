@@ -200,8 +200,7 @@
         }
 
         function renderLocButtons() {
-            const html = '<button class="btn btn-loc active" onclick="setLoc(event, \'All Sites\')">All Sites</button>' + 
-                summary.locations.map(l => 
+            const html = summary.locations.map(l => 
                 `<button class="btn btn-loc" onclick="setLoc(event, '${l.name}')">${l.name}</button>`
             ).join('');
             document.getElementById('locButtons').innerHTML = html;
