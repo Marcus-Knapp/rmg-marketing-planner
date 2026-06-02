@@ -370,10 +370,20 @@
                 // Show individual campaigns for specific site (with edit capability)
                 const camps = allCamps[currentLoc] || [];
                 const s = document.getElementById('search').value.toLowerCase();
-                let html = '';
-                camps.forEach((r, i) => {
+                
+                // Sort campaigns A-Z by name
+                const sorted = camps.filter(r => {
                     const name = r[0];
-                    if (!name || name.toString().toLowerCase().includes('total')) return;
+                    return name && !name.toString().toLowerCase().includes('total');
+                }).sort((a, b) => {
+                    const nameA = (a[0] || '').toString().toLowerCase();
+                    const nameB = (b[0] || '').toString().toLowerCase();
+                    return nameA.localeCompare(nameB);
+                });
+                
+                let html = '';
+                sorted.forEach((r, i) => {
+                    const name = r[0];
                     if (s && !name.toString().toLowerCase().includes(s)) return;
                     const q1 = (parseFloat(r[3])||0) + (parseFloat(r[4])||0) + (parseFloat(r[5])||0);
                     const q2 = (parseFloat(r[6])||0) + (parseFloat(r[7])||0) + (parseFloat(r[8])||0);
