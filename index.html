@@ -376,9 +376,10 @@
         async function saveCampaign() {
             const vals = [];
             for (let i=0; i<12; i++) vals.push(parseFloat(document.getElementById(`m${i}`).value)||0);
-            console.log('Saving:', {sheet: currentLoc, index: currentIdx, months: vals});
+            const campaignName = document.getElementById('editName').value;
+            console.log('Saving:', {sheet: currentLoc, campaignName: campaignName, months: vals});
             try {
-                const res = await fetch(API, {method:'POST', body:JSON.stringify({action:'updateSpend', sheet:currentLoc, campaignIndex:currentIdx, months:vals})});
+                const res = await fetch(API, {method:'POST', body:JSON.stringify({action:'updateSpend', sheet:currentLoc, campaignName:campaignName, months:vals})});
                 console.log('Response status:', res.status);
                 const result = await res.json();
                 console.log('Result:', result);

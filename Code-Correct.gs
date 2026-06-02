@@ -117,16 +117,27 @@ function getDashboardSummary() {
   };
 }
 
-function updateSpend(sheetName, campaignIndex, months) {
+function updateSpend(sheetName, campaignName, months) {
   const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
   const sheet = ss.getSheetByName(sheetName);
   const data = sheet.getRange(DATA_RANGE).getValues();
   
-  const rowIndex = campaignIndex + 2;
+  // Find the actual row by searching for the campaign name
+  let actualRowIndex = -1;
+  for (let i = 2; i < data.length; i++) {
+    if (data[i][0] && data[i][0].toString() === campaignName) {
+      actualRowIndex = i;
+      break;
+    }
+  }
+  
+  if (actualRowIndex === -1) {
+    return { success: false, error: 'Campaign not found' };
+  }
   
   // Columns D-O (indices 3-14) are the 12 months: Jan through Dec
   for (let i = 0; i < 12; i++) {
-    data[rowIndex][3 + i] = months[i];
+    data[actualRowIndex][3 + i] = months[i];
   }
   
   // Column P (index 15) is auto-calculated Annual Total - don't touch it
@@ -170,7 +181,7 @@ function doPost(e) {
   try {
     switch (params.action) {
       case 'updateSpend':
-        result = updateSpend(params.sheet, params.campaignIndex, params.months);
+        result = updateSpend(params.sheet, params.campaignName, params.months);
         break;
       default:
         result = { error: 'Unknown action' };
