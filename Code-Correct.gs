@@ -122,12 +122,16 @@ function updateSpend(sheetName, campaignName, months) {
   const sheet = ss.getSheetByName(sheetName);
   const data = sheet.getRange(DATA_RANGE).getValues();
   
-  // Find the actual row by searching for the campaign name
+  // Find the actual row by searching for the campaign name (case-insensitive)
   let actualRowIndex = -1;
+  const campaignNameLower = campaignName.toString().toLowerCase().trim();
   for (let i = 2; i < data.length; i++) {
-    if (data[i][0] && data[i][0].toString() === campaignName) {
-      actualRowIndex = i;
-      break;
+    if (data[i][0]) {
+      const cellNameLower = data[i][0].toString().toLowerCase().trim();
+      if (cellNameLower === campaignNameLower) {
+        actualRowIndex = i;
+        break;
+      }
     }
   }
   
