@@ -329,9 +329,15 @@
 
         function renderTable() {
             let camps = [];
+            let locationForCamp = {}; // Track which location each campaign belongs to
             
             if (currentLoc === 'All Sites') {
-                Object.values(allCamps).forEach(c => { camps = camps.concat(c); });
+                Object.keys(allCamps).forEach(loc => {
+                    allCamps[loc].forEach((c, idx) => {
+                        camps.push(c);
+                        locationForCamp[camps.length - 1] = loc;
+                    });
+                });
             } else {
                 camps = allCamps[currentLoc] || [];
             }
@@ -347,7 +353,9 @@
                 const q3 = (parseFloat(r[9])||0) + (parseFloat(r[10])||0) + (parseFloat(r[11])||0);
                 const q4 = (parseFloat(r[12])||0) + (parseFloat(r[13])||0) + (parseFloat(r[14])||0);
                 const ann = q1 + q2 + q3 + q4;
-                html += `<tr><td>${name}</td><td>${r[1]||'-'}</td><td>${fmt(q1)}</td><td>${fmt(q2)}</td><td>${fmt(q3)}</td><td>${fmt(q4)}</td><td>${fmt(ann)}</td></tr>`;
+                const clickable = currentLoc !== 'All Sites' ? `onclick="editCamp(${i})"` : '';
+                const style = currentLoc !== 'All Sites' ? 'cursor:pointer' : '';
+                html += `<tr ${clickable} style="${style}"><td>${name}</td><td>${r[1]||'-'}</td><td>${fmt(q1)}</td><td>${fmt(q2)}</td><td>${fmt(q3)}</td><td>${fmt(q4)}</td><td>${fmt(ann)}</td></tr>`;
             });
             document.getElementById('tableBody').innerHTML = html || '<tr><td colspan="7" style="text-align:center; padding: 20px;">No campaigns</td></tr>';
         }
